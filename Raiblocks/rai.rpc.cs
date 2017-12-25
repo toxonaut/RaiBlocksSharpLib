@@ -18,42 +18,19 @@ namespace Raiblocks
         }
         public string rpc(string request)
         {
-            string resultat="";
+            string result="";
             try
             {
-                 resultat = Post2(url_base);
+                 result = Post(url_base);
             }
             catch (Exception x)
             {
                  
             }
-            return resultat;
+            return result;
         }
-
-        public string Post(string url, string payload)
-        {
-            WebHeaderCollection headers = new WebHeaderCollection();
-            headers.Add("action", "account_balance");
-            headers.Add("account", "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000");
-
-            Uri APIurl = new Uri(url);
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(APIurl);
-            request.KeepAlive = true;
-            request.Method = "POST";
-            request.Headers.Add(headers);
-
-            string responseString;
-            using (var response = request.GetResponse() as HttpWebResponse)
-            {
-                using (var reader = new System.IO.StreamReader(response.GetResponseStream()))
-                {
-                    responseString = reader.ReadToEnd();
-                }
-            }
-            return responseString;
-        }
-
-        public string Post2(string json)
+        
+        public string Post(string json)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url_base);
             httpWebRequest.ContentType = "application/json";
@@ -82,7 +59,7 @@ namespace Raiblocks
             string json = "{\"action\":\"account_balance\"," +
                               "\"account\":\"" + account + "\"}";
 
-            return (Post2(json));
+            return (Post(json));
         }
     }
 }

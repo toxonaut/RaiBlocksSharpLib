@@ -21,7 +21,6 @@ namespace Raiblocks
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
             label2.Text = rai.AccountBalance(textBox1.Text) + " XRB";
         }
     }
