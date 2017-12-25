@@ -12,15 +12,17 @@ namespace Raiblocks
 {
     public partial class Form1 : Form
     {
+        Rai rai;
         public Form1()
         {
             InitializeComponent();
+             rai = new Rai("http://localhost:7076");
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Rai rai = new Rai("http://localhost:7076");
-            rai.rpc("gaga");
+            
+            label2.Text = rai.AccountBalance(textBox1.Text) + " XRB";
         }
     }
 }

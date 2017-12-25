@@ -53,17 +53,15 @@ namespace Raiblocks
             return responseString;
         }
 
-        public string Post2(string url)
+        public string Post2(string json)
         {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url_base);
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
 
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
-                string json = "{\"action\":\"account_balance\"," +
-                              "\"account\":\"xrb_3qtrcf8q11u3g33keqk6cnjjsa9zrp1dguzuqeu5f4fw4x8fzaze9gugrw4m\"}";
-
+                
                 streamWriter.Write(json);
                 streamWriter.Flush();
                 streamWriter.Close();
@@ -78,6 +76,13 @@ namespace Raiblocks
             }
 
             return result;
+        }
+        public string AccountBalance(string account)
+        {
+            string json = "{\"action\":\"account_balance\"," +
+                              "\"account\":\"" + account + "\"}";
+
+            return (Post2(json));
         }
     }
 }
