@@ -119,7 +119,7 @@
             this.txtWallet.Name = "txtWallet";
             this.txtWallet.Size = new System.Drawing.Size(550, 20);
             this.txtWallet.TabIndex = 7;
-            this.txtWallet.Text = "5192EBAE4E73DECECC365D53E0BCEA50929977A80E49EDC0A50C3C6FDA7A91DD";
+            this.txtWallet.Text = "XXX";
             // 
             // button3
             // 
