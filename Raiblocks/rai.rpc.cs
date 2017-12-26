@@ -15,6 +15,12 @@ namespace Raiblocks
         public double balance { get; set; }
         public double pending { get; set; }
     }
+    public class Frontier
+    {
+        public string account { get; set; }
+        public string hash { get; set; }
+    }
+
     public class History
     {
         public string hash { get; set; }
@@ -101,6 +107,12 @@ namespace Raiblocks
             return keyPair;
         }
 
+        public List<AccountBalance> AccountsBalances(List<string> accounts)
+        {
+            //TODO
+            Rai.AccountsBalances(accounts);
+            return null;
+        }
 
 
     }
@@ -183,6 +195,31 @@ namespace Raiblocks
 
             return output;
         }
+        private dynamic GetDynamicObj(string jsonIn)
+        {
+            string jsonOut = Post(jsonIn);
+            dynamic dynObj = JsonConvert.DeserializeObject(jsonOut);
+            return dynObj;
+        }
+
+        private string CommaSeparated(List<string> separateStrings)
+        {
+            string commaSeparated = "";
+            foreach (string s in separateStrings)
+            {
+                commaSeparated += "\"" + s + "\",";
+            }
+            commaSeparated = commaSeparated.TrimEnd(',');
+            return commaSeparated;
+        }
+
+        /*  AccountBalance: Returns how many RAW is owned and how many have not yet been received by account
+         *  Response:
+            {  
+              "balance": "10000",  
+              "pending": "10000"  
+            }
+        */
         public dynamic AccountBalance(string account, XRBUnit unit = XRBUnit.XRB)
         { 
             string jsonIn = "{\"action\":\"account_balance\"," +
@@ -192,13 +229,18 @@ namespace Raiblocks
             dynObj.balance = UnitConvert(Convert.ToDouble(dynObj.balance), XRBUnit.raw, unit);
             return (dynObj);
         }
+
+        /*  AccountBlockCount: Get number of blocks for a specific account
+         *  Response:
+            {  
+              "block_count" : "19"  
+            }
+        */
         public dynamic AccountBlockCount(string account)
         {
             string jsonIn = "{\"action\":\"account_block_count\"," +
                               "\"account\":\"" + account + "\"}";
-            string jsonOut = Post(jsonIn);
-            dynamic dynObj = JsonConvert.DeserializeObject(jsonOut);
-            return (dynObj);
+            return (GetDynamicObj(jsonIn));
         }
 
         /*  AccountInformation: Returns frontier, open block, change representative block, balance, last modified timestamp from local database & block count for account
@@ -247,9 +289,7 @@ namespace Raiblocks
                               "\"wallet\":\"" + wallet + "\"," +
                               "\"work\":\"" + work.ToString() + "\"" +
                               "}";
-            string jsonOut = Post(jsonIn);
-            dynamic dynObj = JsonConvert.DeserializeObject(jsonOut);
-            return (dynObj);
+            return (GetDynamicObj(jsonIn));
         }
 
         /*  AccountGet: Get account number for the public key
@@ -262,9 +302,7 @@ namespace Raiblocks
         {
             string jsonIn = "{\"action\":\"account_get\"," +
                               "\"key\":\"" + key + "\"}";
-            string jsonOut = Post(jsonIn);
-            dynamic dynObj = JsonConvert.DeserializeObject(jsonOut);
-            return (dynObj);
+            return (GetDynamicObj(jsonIn));
         }
 
         /*  AccountHistory:  Reports send/receive information for a account
@@ -284,9 +322,7 @@ namespace Raiblocks
                               "\"account\":\"" + account + "\"," +
                               "\"count\":\"" + count.ToString() + "\"" +
                               "}";
-            string jsonOut = Post(jsonIn);
-            dynamic dynObj = JsonConvert.DeserializeObject(jsonOut);
-            return (dynObj);
+            return (GetDynamicObj(jsonIn));
         }
 
         /*  AccountList: Lists all the accounts inside wallet
@@ -302,10 +338,328 @@ namespace Raiblocks
             string jsonIn = "{\"action\":\"account_list\"," +
                               "\"wallet\":\"" + wallet + "\"" +
                               "}";
-            string jsonOut = Post(jsonIn);
-            dynamic dynObj = JsonConvert.DeserializeObject(jsonOut);
-            return (dynObj);
+            return (GetDynamicObj(jsonIn));
         }
+
+        /*  AccountMove: Moves accounts from source to wallet
+         *  Response:
+            {  
+                "moved" : "1"
+            }
+         */
+        public dynamic AccountMove(string wallet, string source, List<string> accounts)
+        {
+            string accountsString = CommaSeparated(accounts);
+            string jsonIn = "{\"action\":\"account_move\"," +
+                              "\"wallet\":\"" + wallet + "\"," +
+                              "\"source\":\"" + source + "\"," +
+                              "\"accounts\": [" + accountsString + "]" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  AccountPublicKey: Get the public key for account
+         *  Response:
+            {  
+              "key": "3068BB1CA04525BB0E416C485FE6A67FD52540227D267CC8B6E8DA958A7FA039"  
+            }
+         */
+        public dynamic AccountPublicKey(string account)
+        {
+            string jsonIn = "{\"action\":\"account_key\"," +
+                              "\"account\":\"" + account + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+
+        /*  AccounRemove: Remove account from wallet
+         *  Response:
+            {  
+              "removed": "1"
+            }
+         */
+        public dynamic AccountRemove(string wallet, string account)
+        {
+            string jsonIn = "{\"action\":\"account_remove\"," +
+                              "\"wallet\":\"" + wallet + "\"," +
+                              "\"account\":\"" + account + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  AccountRepresentative: Returns the representative for account
+        *   Response:
+            {  
+                "representative" : "xrb_16u1uufyoig8777y6r8iqjtrw8sg8maqrm36zzcm95jmbd9i9aj5i8abr8u5"
+            }
+        */
+        public dynamic AccountRepresentative(string account)
+        {
+            string jsonIn = "{\"action\":\"account_representative\"," +
+                              "\"account\":\"" + account + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+
+        /*  AccountRepresentativeSet: Sets the representative for account in wallet
+        *   Response:
+            {  
+              "block": "000D1BAEC8EC208142C99059B393051BAC8380F9B5A2E6B2489A277D81789F3F"
+            }
+        */
+        public dynamic AccountRepresentativeSet(string wallet, string account, string representative)
+        {
+            string jsonIn = "{\"action\":\"account_representative\"," +
+                              "\"wallet\":\"" + wallet + "\"," +
+                              "\"account\":\"" + account + "\"," +
+                              "\"representative\":\"" + representative + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  AccountWeight: Returns the voting weight for account
+        *   Response:
+            {  
+              "weight": "10000"  
+            }
+        */
+        public dynamic AccountWeight(string account)
+        {
+            string jsonIn = "{\"action\":\"account_weight\"," +
+                              "\"account\":\"" + account + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  AccountsBalances: Returns how many RAW is owned and how many have not yet been received by accounts list
+        *   Response:
+            {  
+              "balances" : {  
+                "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000":  
+                {  
+                  "balance": "10000",  
+                  "pending": "10000"  
+                },  
+                "xrb_3i1aq1cchnmbn9x5rsbap8b15akfh7wj7pwskuzi7ahz8oq6cobd99d4r3b7":  
+                {  
+                  "balance": "10000000",  
+                  "pending": "0"  
+                }  
+              }  
+            }
+        */
+        public dynamic AccountsBalances(List<string> accounts)
+        {
+            string accountsString = CommaSeparated(accounts);
+            string jsonIn = "{\"action\":\"account_weight\"," +
+                              "\"account\": [" + accountsString + "]" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  AccountsCreate: Creates new accounts, insert next deterministic keys in wallet up to count
+        *   Response:
+            {  
+              "accounts": [    
+                 "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",   
+                 "xrb_1e5aqegc1jb7qe964u4adzmcezyo6o146zb8hm6dft8tkp79za3s00000000"
+              ]   
+            }
+        */
+        public dynamic AccountsCreate(string wallet, int count, bool work=true)
+        {
+            string jsonIn = "{\"action\":\"accounts_create\"," +
+                              "\"wallet\":\"" + wallet + "\"," +
+                              "\"count\":\"" + count.ToString() + "\"," +
+                              "\"work\":\"" + work.ToString() + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  AccountsFrontiers: Returns a list of pairs of account and block hash representing the head block for accounts list
+        *   Response:
+            {  
+              "frontiers" : {  
+                "xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3": "791AF413173EEE674A6FCF633B5DFC0F3C33F397F0DA08E987D9E0741D40D81A",  
+                "xrb_3i1aq1cchnmbn9x5rsbap8b15akfh7wj7pwskuzi7ahz8oq6cobd99d4r3b7": "6A32397F4E95AF025DE29D9BF1ACE864D5404362258E06489FABDBA9DCCC046F"  
+              }  
+            }
+        */
+        public dynamic AccountsFrontiers(List<string> accounts)
+        {
+            string accountsString = CommaSeparated(accounts);
+            string jsonIn = "{\"action\":\"accounts_frontiers\"," +
+                              "\"account\": [" + accountsString + "]" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  AccountsPending: Returns a list of block hashes which have not yet been received by these accounts
+         *   Response:
+             {  
+              "blocks" : {  
+                "xrb_1111111111111111111111111111111111111111111111111117353trpda": ["142A538F36833D1CC78B94E11C766F75818F8B940771335C6C1B8AB880C5BB1D"],  
+                "xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3": ["4C1FEEF0BEA7F50BE35489A1233FE002B212DEA554B55B1B470D78BD8F210C74"]  
+              }  
+             }
+         */
+        public dynamic AccountsPending(List<string> accounts, int count)
+        {
+            string accountsString = CommaSeparated(accounts);
+            string jsonIn = "{\"action\":\"accounts_pending\"," +
+                              "\"account\": [" + accountsString + "]," +
+                              "\"count\":\"" + count.ToString() + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+        /*  AccountsPending: Returns a list of block hashes which have not yet been received by these accounts
+         *  Optional "threshold": Returns a list of pending block hashes with amount more or equal to threshold
+         *  Response:
+            {  
+              "blocks" : {
+                "xrb_1111111111111111111111111111111111111111111111111117353trpda": {    
+                    "142A538F36833D1CC78B94E11C766F75818F8B940771335C6C1B8AB880C5BB1D": "6000000000000000000000000000000"    
+                },    
+                "xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3": {    
+                    "4C1FEEF0BEA7F50BE35489A1233FE002B212DEA554B55B1B470D78BD8F210C74": "106370018000000000000000000000000"    
+                }  
+            }
+        */
+        public dynamic AccountsPending(List<string> accounts, int count, double threshold,XRBUnit thresholdUnit= XRBUnit.raw)
+        {
+            string accountsString = CommaSeparated(accounts);
+            string jsonIn = "{\"action\":\"accounts_pending\"," +
+                              "\"account\": [" + accountsString + "]," +
+                              "\"count\":\"" + count.ToString() + "\"," +
+                              "\"threshold\":\"" + UnitConvert(threshold, XRBUnit.raw, thresholdUnit).ToString() + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+        /*  AccountsPending: Returns a list of block hashes which have not yet been received by these accounts
+                 *  Optional "source": Returns a list of pending block hashes with amount and source accounts
+                 *  Response:
+                    {  
+                      "blocks" : {
+                        "xrb_1111111111111111111111111111111111111111111111111117353trpda": {    
+                            "142A538F36833D1CC78B94E11C766F75818F8B940771335C6C1B8AB880C5BB1D": {   
+                                 "amount": "6000000000000000000000000000000",       
+                                 "source": "xrb_3dcfozsmekr1tr9skf1oa5wbgmxt81qepfdnt7zicq5x3hk65fg4fqj58mbr"
+                            }
+                        },    
+                        "xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3": {    
+                            "4C1FEEF0BEA7F50BE35489A1233FE002B212DEA554B55B1B470D78BD8F210C74": {   
+                                 "amount": "106370018000000000000000000000000",       
+                                 "source": "xrb_13ezf4od79h1tgj9aiu4djzcmmguendtjfuhwfukhuucboua8cpoihmh8byo"
+                            }   
+                        }  
+                    }
+                */
+        public dynamic AccountsPending(List<string> accounts, int count, bool source)
+        {
+            string accountsString = CommaSeparated(accounts);
+            string jsonIn = "{\"action\":\"accounts_pending\"," +
+                              "\"account\": [" + accountsString + "]," +
+                              "\"count\":\"" + count.ToString() + "\"," +
+                              "\"source\":\"" + source.ToString() + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  AvailableSupply:  Returns how many rai are in the public supply
+         *  Response:
+            {  
+              "available": "10000"  
+            }
+         */
+        public double AvailableSupply()
+        {
+            string jsonIn = "{\"action\":\"available_supply\"" +
+                              "}";
+            dynamic dynObj = GetDynamicObj(jsonIn);            
+            return (Convert.ToDouble(dynObj.available));
+        }
+
+        /*  RetrieveBlock: Retrieves a json representation of block
+         *  Response:
+            {  
+              "contents" : "{
+                "type": "open",
+                "account": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",
+                "representative": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",
+                "source": "FA5B51D063BADDF345EFD7EF0D3C5FB115C85B1EF4CDE89D8B7DF3EAF60A04A4",
+                "work": "0000000000000000",
+                "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+            }"
+            }
+        */
+        public dynamic RetrieveBlock(string hash)
+        {
+
+            string jsonIn = "{\"action\":\"block\"," +
+                              "\"hash\":\"" + hash + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  RetrieveMultipleBlocks: Retrieves a json representations of blocks
+           *  Response:
+              {  
+                  "blocks" : {  
+                    "000D1BAEC8EC208142C99059B393051BAC8380F9B5A2E6B2489A277D81789F3F": "{  
+                      "type": "open",  
+                      "account": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",  
+                      "representative": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",  
+                      "source": "FA5B51D063BADDF345EFD7EF0D3C5FB115C85B1EF4CDE89D8B7DF3EAF60A04A4",  
+                      "work": "0000000000000000",  
+                      "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"  
+                    }"
+                  }
+                }
+          */
+        public dynamic RetrieveMultipleBlocks(List<string> hashes)
+        {
+            string hashesString = CommaSeparated(hashes);
+            string jsonIn = "{\"action\":\"block\"," +
+                              "\"account\": [" + hashesString + "]" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  RetrieveMultipleBlocksWithAdditionalInfo: Retrieves a json representations of blocks with transaction amount & block account Request:
+           *  Response:
+              {  
+                  "blocks" : {   
+                    "000D1BAEC8EC208142C99059B393051BAC8380F9B5A2E6B2489A277D81789F3F": {   
+                       "block_account": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",   
+                       "amount": "1000000000000000000000000000000",   
+                       "contents": "{  
+                          "type": "open",  
+                          "account": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",  
+                          "representative": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",  
+                          "source": "FA5B51D063BADDF345EFD7EF0D3C5FB115C85B1EF4CDE89D8B7DF3EAF60A04A4",  
+                          "work": "0000000000000000",  
+                          "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"  
+                         }"
+                     }
+                  }
+                }
+          */
+        public dynamic RetrieveMultipleBlocksWithAdditionalInfo(List<string> hashes, bool pending = false, bool source = false)
+        {
+            string hashesString = CommaSeparated(hashes);
+            string jsonIn = "{\"action\":\"blocks_info\"," +
+                              "\"account\": [" + hashesString + "]," +
+                              "\"pending\":\"" + pending.ToString() + "\"," +
+                              "\"source\":\"" + source.ToString() + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+
+
+
 
 
 
