@@ -53,6 +53,12 @@
             this.btnWalletDestroy = new System.Windows.Forms.Button();
             this.btnAccountsCreate = new System.Windows.Forms.Button();
             this.txtNumAccounts = new System.Windows.Forms.TextBox();
+            this.btnAvailableSupply = new System.Windows.Forms.Button();
+            this.btnBlockCnt = new System.Windows.Forms.Button();
+            this.btnChain = new System.Windows.Forms.Button();
+            this.txtBlockCount = new System.Windows.Forms.TextBox();
+            this.txtBlock = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -285,11 +291,71 @@
             this.txtNumAccounts.TabIndex = 24;
             this.txtNumAccounts.Text = "2";
             // 
+            // btnAvailableSupply
+            // 
+            this.btnAvailableSupply.Location = new System.Drawing.Point(913, 28);
+            this.btnAvailableSupply.Name = "btnAvailableSupply";
+            this.btnAvailableSupply.Size = new System.Drawing.Size(100, 23);
+            this.btnAvailableSupply.TabIndex = 25;
+            this.btnAvailableSupply.Text = "Available supply";
+            this.btnAvailableSupply.UseVisualStyleBackColor = true;
+            this.btnAvailableSupply.Click += new System.EventHandler(this.btnAvailableSupply_Click);
+            // 
+            // btnBlockCnt
+            // 
+            this.btnBlockCnt.Location = new System.Drawing.Point(913, 153);
+            this.btnBlockCnt.Name = "btnBlockCnt";
+            this.btnBlockCnt.Size = new System.Drawing.Size(100, 23);
+            this.btnBlockCnt.TabIndex = 26;
+            this.btnBlockCnt.Text = "Block Count";
+            this.btnBlockCnt.UseVisualStyleBackColor = true;
+            this.btnBlockCnt.Click += new System.EventHandler(this.btnBlockCnt_Click);
+            // 
+            // btnChain
+            // 
+            this.btnChain.Location = new System.Drawing.Point(913, 268);
+            this.btnChain.Name = "btnChain";
+            this.btnChain.Size = new System.Drawing.Size(100, 23);
+            this.btnChain.TabIndex = 27;
+            this.btnChain.Text = "Chain";
+            this.btnChain.UseVisualStyleBackColor = true;
+            this.btnChain.Click += new System.EventHandler(this.btnChain_Click);
+            // 
+            // txtBlockCount
+            // 
+            this.txtBlockCount.Location = new System.Drawing.Point(1020, 270);
+            this.txtBlockCount.Name = "txtBlockCount";
+            this.txtBlockCount.Size = new System.Drawing.Size(39, 20);
+            this.txtBlockCount.TabIndex = 28;
+            this.txtBlockCount.Text = "1";
+            // 
+            // txtBlock
+            // 
+            this.txtBlock.Location = new System.Drawing.Point(80, 390);
+            this.txtBlock.Name = "txtBlock";
+            this.txtBlock.Size = new System.Drawing.Size(409, 20);
+            this.txtBlock.TabIndex = 29;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(20, 396);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(34, 13);
+            this.label7.TabIndex = 30;
+            this.label7.Text = "Block";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1172, 509);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.txtBlock);
+            this.Controls.Add(this.txtBlockCount);
+            this.Controls.Add(this.btnChain);
+            this.Controls.Add(this.btnBlockCnt);
+            this.Controls.Add(this.btnAvailableSupply);
             this.Controls.Add(this.txtNumAccounts);
             this.Controls.Add(this.btnAccountsCreate);
             this.Controls.Add(this.btnWalletDestroy);
@@ -349,6 +415,12 @@
         private System.Windows.Forms.Button btnWalletDestroy;
         private System.Windows.Forms.Button btnAccountsCreate;
         private System.Windows.Forms.TextBox txtNumAccounts;
+        private System.Windows.Forms.Button btnAvailableSupply;
+        private System.Windows.Forms.Button btnBlockCnt;
+        private System.Windows.Forms.Button btnChain;
+        private System.Windows.Forms.TextBox txtBlockCount;
+        private System.Windows.Forms.TextBox txtBlock;
+        private System.Windows.Forms.Label label7;
     }
 }
 

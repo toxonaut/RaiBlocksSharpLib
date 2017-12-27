@@ -95,5 +95,23 @@ namespace Raiblocks
         {
             richTextBox1.Text = "Accounts: " + API.Rai.AccountsCreate(txtWallet.Text, Convert.ToInt16(txtNumAccounts.Text));
         }
+
+        private void btnAvailableSupply_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "Available: " + API.Rai.AvailableSupply().ToString();
+        }
+
+        private void btnBlockCnt_Click(object sender, EventArgs e)
+        {
+            var blockCount = API.Rai.BlockCount();
+            richTextBox1.Text = "count: " + blockCount.count + "\n";
+            richTextBox1.Text += "unchecked: " + blockCount.un_checked + "\n";
+        }
+
+        private void btnChain_Click(object sender, EventArgs e)
+        {
+            List<string> blocks = API.Chain(txtBlock.Text, Convert.ToInt32(txtBlockCount.Text));
+            richTextBox1.Text = "blocks: " + blocks.Aggregate((i, j) => i + "," + j);
+        }
     }
 }

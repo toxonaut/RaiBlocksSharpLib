@@ -18,6 +18,55 @@ namespace Raiblocks
         public double balance { get; set; }
         public double pending { get; set; }
     }
+
+    public class Block
+    {
+        public string type { get; set; }
+        public string account { get; set; }
+        public string representative { get; set; }
+        public string TaskCompletionSource { get; set; }
+        public string work { get; set; }
+        public string signature { get; set; }
+    }
+    public class BlockAdditional
+    {
+        public string block_account { get; set; }
+        public string amount { get; set; }
+        public Block contents { get; set; }
+    }
+
+    public class BlocksAdditionalContainer
+    {
+        [JsonExtensionData]
+        public IDictionary<BlockAdditional, JToken> _extraStuff;
+    }
+    public class BlocksContainer
+    {
+        [JsonExtensionData]
+        public IDictionary<Block, JToken> _extraStuff;
+    }
+    public class BlocksAdditionalResponse
+    {
+        public BlocksAdditionalContainer blocks { get; set; }
+    }
+    public class BlocksMultipleResponse
+    {
+        public BlocksContainer blocks { get; set; }
+    }
+    public class BlocksResponse
+    {
+        public Block contents { get; set; }
+    }
+    public class Blocks2
+    {
+        // known field
+        public decimal TaxRate { get; set; }
+
+        // extra fields
+        [JsonExtensionData]
+        private IDictionary<Block, JToken> _extraStuff;
+    }
+
     public class Frontier
     {
         public string account { get; set; }
@@ -45,99 +94,7 @@ namespace Raiblocks
         raw, XRB, Trai, Grai, Mrai, krai, rai, mrai, urai, prai
     }
 
-    class RaiAPI
-    {
-        public RaiAPI(string url_base)
-        {
-            this.Rai = new Rai(url_base);
-        }
-        public Rai Rai
-        {
-            get;
-        }
-        public AccountBalance AccountBalance(string account)
-        {
-            dynamic accountBalance = Rai.AccountBalance(account);
-            AccountBalance ab = new AccountBalance() { account = account, balance = accountBalance.balance, pending = accountBalance.pending };
-            return ab;
-        }
-        public Int32 AccountBlockCount(string account)
-        {
-            dynamic accountBlockCount = Rai.AccountBlockCount(account);
-            Int32 block_count = Convert.ToInt32(accountBlockCount.block_count);
-            return block_count;
-        }
-        public string AccountCreate(string wallet)
-        {
-            dynamic accountCreate = Rai.AccountCreate(wallet);
-            string account =accountCreate.account.ToString();
-            return account;
-        }
-        public string AccountGet(string key)
-        {
-            dynamic accountGet = Rai.AccountCreate(key);
-            string account = accountGet.account.ToString();
-            return account;
-        }
-        public List<History> AccountHistory(string account, int count, XRBUnit unit = XRBUnit.XRB)
-        {
-            List<History> historyList = new List<History>();
-            dynamic accountHistory = Rai.AccountHistory(account, count);
-            dynamic history = accountHistory.history;
-            for (int i=0; i<history.Count;i++)
-            {
-                History hist = new History() { account = account, amount = Rai.UnitConvert(Convert.ToDouble(history[i].amount), XRBUnit.raw, unit), hash = history[i].hash, type = history[i].type };
-                historyList.Add(hist);
-            }
-            return historyList;
-        }
-        public List<string> AccountList(string account)
-        {
-            List<string> accountList = new List<string>();
-            dynamic accountsList = Rai.AccountList(account);
-            dynamic accounts = accountsList.accounts;
-            for (int i = 0; i < accounts.Count; i++)
-            {
-                accountList.Add(accounts[i]);
-            }
-            return accountList;
-        }
-
-
-        public KeyPair DeterministicKey(string seed, int index)
-        {
-            KeyPair keyPair = Rai.DeterministicKey(seed, index);
-            return keyPair;
-        }
-
-        public List<AccountBalance> AccountsBalances(List<string> accounts, XRBUnit unit = XRBUnit.XRB)
-        {
-            List<AccountBalance> accountBalances = new List<AccountBalance>();
-            dynamic item = Rai.AccountsBalances(accounts, unit);
-
-            IDictionary<string, object> propertyValues = item.balances;
-
-            foreach (var property in propertyValues.Keys)
-            {
-                AccountBalance ab = new AccountBalance();
-                
-                ab.account = property;
-                IDictionary<string, object> propertyValues2 = ((IDictionary<string, object>)propertyValues[property]);
-                foreach (var property2 in propertyValues2.Keys)
-                {
-                    if (property2=="balance")
-                        ab.balance = Rai.UnitConvert(Convert.ToDouble(propertyValues2[property2]), XRBUnit.raw, unit);
-                    
-                    if (property2 == "pending")
-                        ab.pending = Rai.UnitConvert(Convert.ToDouble(propertyValues2[property2]), XRBUnit.raw, unit); 
-                } 
-                accountBalances.Add(ab);
-            }
-            return accountBalances;
-        }
-
-
-    }
+    
     class Rai
     {
         string url_base;
@@ -478,7 +435,7 @@ namespace Raiblocks
               }  
             }
         */
-        public dynamic AccountsBalances(List<string> accounts, XRBUnit unit = XRBUnit.XRB)
+        public dynamic AccountsBalances(List<string> accounts)
         {
             string accountsString = CommaSeparated(accounts);
             string jsonIn = "{\"action\":\"accounts_balances\"," +
@@ -610,7 +567,7 @@ namespace Raiblocks
             return (Convert.ToDouble(dynObj.available));
         }
 
-        /*  RetrieveBlock: Retrieves a json representation of block
+        /*  Retrieve block:  Retrieves a json representation of block
          *  Response:
             {  
               "contents" : "{
@@ -622,41 +579,48 @@ namespace Raiblocks
                 "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
             }"
             }
-        */
-        public dynamic RetrieveBlock(string hash)
+         */
+        public Block RetrieveBlock(string hash)
         {
 
             string jsonIn = "{\"action\":\"block\"," +
                               "\"hash\":\"" + hash + "\"" +
                               "}";
-            return (GetDynamicObj(jsonIn));
+
+            string jsonOut = Post(jsonIn);
+            BlocksResponse blocksResponse = JsonConvert.DeserializeObject<BlocksResponse>(jsonOut);
+
+            return (blocksResponse.contents);
         }
 
-        /*  RetrieveMultipleBlocks: Retrieves a json representations of blocks
-           *  Response:
-              {  
-                  "blocks" : {  
-                    "000D1BAEC8EC208142C99059B393051BAC8380F9B5A2E6B2489A277D81789F3F": "{  
-                      "type": "open",  
-                      "account": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",  
-                      "representative": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",  
-                      "source": "FA5B51D063BADDF345EFD7EF0D3C5FB115C85B1EF4CDE89D8B7DF3EAF60A04A4",  
-                      "work": "0000000000000000",  
-                      "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"  
-                    }"
-                  }
-                }
-          */
-        public dynamic RetrieveMultipleBlocks(List<string> hashes)
+        /*  RetrieveMultipleBlocks: Retrieves a json representation of blocks
+         *  Response:
+            {  
+              "blocks" : {  
+                "000D1BAEC8EC208142C99059B393051BAC8380F9B5A2E6B2489A277D81789F3F": "{  
+                  "type": "open",  
+                  "account": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",  
+                  "representative": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",  
+                  "source": "FA5B51D063BADDF345EFD7EF0D3C5FB115C85B1EF4CDE89D8B7DF3EAF60A04A4",  
+                  "work": "0000000000000000",  
+                  "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"  
+                }"
+              }
+            }
+        */
+        public BlocksContainer RetrieveMultipleBlocks(List<string> hashes)
         {
             string hashesString = CommaSeparated(hashes);
-            string jsonIn = "{\"action\":\"block\"," +
-                              "\"account\": [" + hashesString + "]" +
+            string jsonIn = "{\"action\":\"blocks\"," +
+                              "\"hashes\": [" + hashesString + "]" +
                               "}";
-            return (GetDynamicObj(jsonIn));
+            string jsonOut = Post(jsonIn);
+            BlocksMultipleResponse blocksResponse = JsonConvert.DeserializeObject<BlocksMultipleResponse>(jsonOut);
+            return (blocksResponse.blocks);
         }
+        
 
-        /*  RetrieveMultipleBlocksWithAdditionalInfo: Retrieves a json representations of blocks with transaction amount & block account Request:
+        /*  RetrieveMultipleBlocksWithAdditionalInfo: Retrieves a json representations of blocks with transaction amount & block account 
            *  Response:
               {  
                   "blocks" : {   
@@ -675,7 +639,7 @@ namespace Raiblocks
                   }
                 }
           */
-        public dynamic RetrieveMultipleBlocksWithAdditionalInfo(List<string> hashes, bool pending = false, bool source = false)
+        public BlocksAdditionalContainer RetrieveMultipleBlocksWithAdditionalInfo(List<string> hashes, bool pending = false, bool source = false)
         {
             string hashesString = CommaSeparated(hashes);
             string jsonIn = "{\"action\":\"blocks_info\"," +
@@ -683,15 +647,101 @@ namespace Raiblocks
                               "\"pending\":\"" + pending.ToString().ToLower() + "\"," +
                               "\"source\":\"" + source.ToString().ToLower() + "\"" +
                               "}";
-            return (GetDynamicObj(jsonIn));
+            string jsonOut = Post(jsonIn);
+            BlocksAdditionalResponse blocksResponse = JsonConvert.DeserializeObject<BlocksAdditionalResponse>(jsonOut);
+            return (blocksResponse.blocks);
+        }
+
+        /*  BlockAccount: Returns the account containing block
+           *  Response:
+                {  
+                  "account": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000"  
+                }
+          */
+        public string BlockAccount(string hash)
+        {
+            string jsonIn = "{\"action\":\"block_account\"," +
+                              "\"hash\":\"" + hash + "\"" +
+                              "}";
+
+            return (GetDynamicObj(jsonIn).account);
         }
 
 
+        /*  BlockCount: Reports the number of blocks in the ledger and unchecked synchronizing blocks
+        *   Response:
+            {
+              "count": "1000",  
+              "unchecked": "10"  
+            }
+        */
+        public dynamic BlockCount()
+        {
+            string jsonIn = "{\"action\":\"block_count\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn).account);
+        }
 
+        /*  BlockCountByType: Reports the number of blocks in the ledger by type (send, receive, open, change)
+        *   Response:
+            {
+                "send": "1000",   
+                "receive": "900",   
+                "open": "100",   
+                "change": "50"  
+            }
+        */
+        public dynamic BlockCountByType()
+        {
+            string jsonIn = "{\"action\":\"block_count_type\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn).account);
+        }
 
+        /*  Bootstrap: Initialize bootstrap to specific IP address and port
+        *   Response:
+            {
+              "success": ""  
+            }
+        */
+        public dynamic Bootstrap(string address, int port)
+        {
+            string jsonIn = "{\"action\":\"bootstrap\"," +
+                            "\"address\":\"" + address + "\"," +
+                            "\"port\":\"" + port + "\"," +
+                              "}";
+            return (GetDynamicObj(jsonIn).account);
+        }
 
+        /*  BootstrapMultiConnection: Initialize multi-connection bootstrap to random peers
+        *   Response:
+            {
+              "success": ""  
+            }
+        */
+        public dynamic BootstrapMultiConnection()
+        {
+            string jsonIn = "{\"action\":\"bootstrap_any\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn).account);
+        }
 
-
+        /*  Chain: Returns a list of block hashes in the account chain starting at block up to count
+        *   Response:
+            {    
+              "blocks" : [  
+              "000D1BAEC8EC208142C99059B393051BAC8380F9B5A2E6B2489A277D81789F3F"  
+              ]  
+            }
+        */
+        public dynamic Chain(string block, int count)
+        {
+            string jsonIn = "{\"action\":\"chain\"," +
+                            "\"block\":\"" + block + "\"," +
+                            "\"count\":\"" + count + "\"," +
+                              "}";
+            return (GetDynamicObj(jsonIn).account);
+        }
 
 
 
@@ -721,20 +771,70 @@ namespace Raiblocks
         }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         /*  WalletAddKey:  Add an adhoc private key key to wallet
          *  Response:
             {  
               "account" : "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000"
             }
          */
-        public string WalletAddKey(string wallet, string privateKey, bool work)
+        public dynamic WalletAddKey(string wallet, string privateKey, bool work)
         {
             string jsonIn = "{\"action\":\"wallet_add\"," +
                               "\"wallet\":\"" + wallet + "\"," +
                               "\"key\":\"" + privateKey + "\"," +
                               "\"work\":\"" + work.ToString().ToLower() + "\"" +
                               "}";
-            return (GetDynamicObj(jsonIn).account);
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  WalletTotalBalance:  Returns the sum of all accounts balances in wallet
+         *  Response:
+            {  
+                "balance": "10000",  
+                "pending": "10000"  
+            }
+         */
+        public dynamic WalletTotalBalance(string wallet)
+        {
+            string jsonIn = "{\"action\":\"wallet_balance_total\"," +
+                              "\"wallet\":\"" + wallet + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  WalletAccountsBalances:  Returns how many rai is owned and how many have not yet been received by all accounts in wallet
+         *  Response:
+            {  
+              "balances" : {  
+                "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000": {  
+                  "balance": "10000",  
+                  "pending": "10000"  
+                }
+              }   
+            }
+         */
+        public dynamic WalletAccountsBalances(string wallet)
+        {
+            string jsonIn = "{\"action\":\"wallet_balances\"," +
+                              "\"wallet\":\"" + wallet + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
         }
 
 
@@ -752,6 +852,22 @@ namespace Raiblocks
                               "}";
             return (GetDynamicObj(jsonIn));
         }
+
+        /*  WalletContains:  Check whether wallet contains account
+         *  Response:
+            {  
+            "exists" : "1"
+            }
+         */
+        public dynamic WalletContains(string wallet, string account)
+        {
+            string jsonIn = "{\"action\":\"wallet_contains\"," +
+                              "\"wallet\":\"" + wallet + "\"," +
+                              "\"account\":\"" + account + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
 
         /*  WalletCreate:  Creates a new random wallet id
          *  Response:
@@ -771,9 +887,10 @@ namespace Raiblocks
             {  
             }
          */
-        public void WalletDestroy()
+        public void WalletDestroy(string wallet)
         {
-            string jsonIn = "{\"action\":\"wallet_create\"" +
+            string jsonIn = "{\"action\":\"wallet_destroy\"," +
+                              "\"wallet\":\"" + wallet + "\"" +
                               "}";
             dynamic d =GetDynamicObj(jsonIn);
         }
