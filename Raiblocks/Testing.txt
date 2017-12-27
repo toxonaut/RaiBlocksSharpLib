@@ -1,0 +1,12 @@
+﻿private: B0B70F7181E6E10439968204009451F790CA6AEE5103DCC489C96FFAF5E7CF5A
+public: 02DC00BA86373B8E65D3088214573857BB7322F781170D9A1948A4D37B5BA7CF
+account: xrb_11pw14xaefsujskx84644jdmioxugejhh1aq3pf3kk76tfxoqbyhn7tpnjb3
+
+
+
+wallet create BD51B20C4737508CE4A5B021F0FCE33BB203F2DEFD5160DC1B1520CC2945CE28
+
+wallet add key (the one above) : xrb_11pw14xaefsujskx84644jdmioxugejhh1aq3pf3kk76tfxoqbyhn7tpnjb3
+
+account create: xrb_1qsat6nqpqgqboefxdscdueqiq7fhhcbjfkcyjbszq4uzancskjgii7knjer
+

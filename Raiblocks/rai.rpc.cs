@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -12,6 +14,7 @@ namespace Raiblocks
 {
     public class AccountBalance
     {
+        public string account { get; set; }
         public double balance { get; set; }
         public double pending { get; set; }
     }
@@ -55,7 +58,7 @@ namespace Raiblocks
         public AccountBalance AccountBalance(string account)
         {
             dynamic accountBalance = Rai.AccountBalance(account);
-            AccountBalance ab = new AccountBalance() { balance = accountBalance.balance, pending = accountBalance.pending };
+            AccountBalance ab = new AccountBalance() { account = account, balance = accountBalance.balance, pending = accountBalance.pending };
             return ab;
         }
         public Int32 AccountBlockCount(string account)
@@ -107,11 +110,30 @@ namespace Raiblocks
             return keyPair;
         }
 
-        public List<AccountBalance> AccountsBalances(List<string> accounts)
+        public List<AccountBalance> AccountsBalances(List<string> accounts, XRBUnit unit = XRBUnit.XRB)
         {
-            //TODO
-            Rai.AccountsBalances(accounts);
-            return null;
+            List<AccountBalance> accountBalances = new List<AccountBalance>();
+            dynamic item = Rai.AccountsBalances(accounts, unit);
+
+            IDictionary<string, object> propertyValues = item.balances;
+
+            foreach (var property in propertyValues.Keys)
+            {
+                AccountBalance ab = new AccountBalance();
+                
+                ab.account = property;
+                IDictionary<string, object> propertyValues2 = ((IDictionary<string, object>)propertyValues[property]);
+                foreach (var property2 in propertyValues2.Keys)
+                {
+                    if (property2=="balance")
+                        ab.balance = Rai.UnitConvert(Convert.ToDouble(propertyValues2[property2]), XRBUnit.raw, unit);
+                    
+                    if (property2 == "pending")
+                        ab.pending = Rai.UnitConvert(Convert.ToDouble(propertyValues2[property2]), XRBUnit.raw, unit); 
+                } 
+                accountBalances.Add(ab);
+            }
+            return accountBalances;
         }
 
 
@@ -201,7 +223,13 @@ namespace Raiblocks
             dynamic dynObj = JsonConvert.DeserializeObject(jsonOut);
             return dynObj;
         }
-
+        private dynamic GetExpandoObj(string jsonIn)
+        {
+            string jsonOut = Post(jsonIn);
+            var converter = new ExpandoObjectConverter();
+            dynamic dynObj = JsonConvert.DeserializeObject<ExpandoObject>(jsonOut, converter);
+            return dynObj;
+        }
         private string CommaSeparated(List<string> separateStrings)
         {
             string commaSeparated = "";
@@ -262,8 +290,8 @@ namespace Raiblocks
             string jsonIn = "{\"action\":\"account_info\"," +
                               "\"account\":\"" + account + "\"," +
                               "\"representative\":\"" + representative.ToString() + "\"," +
-                              "\"weight\":\"" + weight.ToString() + "\"," +
-                              "\"pending\":\"" + pending.ToString() + "\"" +
+                              "\"weight\":\"" + weight.ToString().ToLower() + "\"," +
+                              "\"pending\":\"" + pending.ToString().ToLower() + "\"" +
                               "}";
             string jsonOut = Post(jsonIn);
             dynamic dynObj = JsonConvert.DeserializeObject(jsonOut);
@@ -283,11 +311,11 @@ namespace Raiblocks
               "work": "false"  
             }
          */
-        public dynamic AccountCreate(string wallet, bool work=false)
+        public dynamic AccountCreate(string wallet, bool work=true)
         {
             string jsonIn = "{\"action\":\"account_create\"," +
                               "\"wallet\":\"" + wallet + "\"," +
-                              "\"work\":\"" + work.ToString() + "\"" +
+                              "\"work\":\"" + work.ToString().ToLower() + "\"" +
                               "}";
             return (GetDynamicObj(jsonIn));
         }
@@ -450,13 +478,14 @@ namespace Raiblocks
               }  
             }
         */
-        public dynamic AccountsBalances(List<string> accounts)
+        public dynamic AccountsBalances(List<string> accounts, XRBUnit unit = XRBUnit.XRB)
         {
             string accountsString = CommaSeparated(accounts);
-            string jsonIn = "{\"action\":\"account_weight\"," +
-                              "\"account\": [" + accountsString + "]" +
+            string jsonIn = "{\"action\":\"accounts_balances\"," +
+                              "\"accounts\": [" + accountsString + "]" +
                               "}";
-            return (GetDynamicObj(jsonIn));
+
+            return (GetExpandoObj(jsonIn));
         }
 
         /*  AccountsCreate: Creates new accounts, insert next deterministic keys in wallet up to count
@@ -473,7 +502,7 @@ namespace Raiblocks
             string jsonIn = "{\"action\":\"accounts_create\"," +
                               "\"wallet\":\"" + wallet + "\"," +
                               "\"count\":\"" + count.ToString() + "\"," +
-                              "\"work\":\"" + work.ToString() + "\"" +
+                              "\"work\":\"" + work.ToString().ToLower() + "\"" +
                               "}";
             return (GetDynamicObj(jsonIn));
         }
@@ -527,7 +556,7 @@ namespace Raiblocks
                 }  
             }
         */
-        public dynamic AccountsPending(List<string> accounts, int count, double threshold,XRBUnit thresholdUnit= XRBUnit.raw)
+        public dynamic AccountsPending(List<string> accounts, int count, double threshold, XRBUnit thresholdUnit= XRBUnit.raw)
         {
             string accountsString = CommaSeparated(accounts);
             string jsonIn = "{\"action\":\"accounts_pending\"," +
@@ -562,7 +591,7 @@ namespace Raiblocks
             string jsonIn = "{\"action\":\"accounts_pending\"," +
                               "\"account\": [" + accountsString + "]," +
                               "\"count\":\"" + count.ToString() + "\"," +
-                              "\"source\":\"" + source.ToString() + "\"" +
+                              "\"source\":\"" + source.ToString().ToLower() + "\"" +
                               "}";
             return (GetDynamicObj(jsonIn));
         }
@@ -651,8 +680,8 @@ namespace Raiblocks
             string hashesString = CommaSeparated(hashes);
             string jsonIn = "{\"action\":\"blocks_info\"," +
                               "\"account\": [" + hashesString + "]," +
-                              "\"pending\":\"" + pending.ToString() + "\"," +
-                              "\"source\":\"" + source.ToString() + "\"" +
+                              "\"pending\":\"" + pending.ToString().ToLower() + "\"," +
+                              "\"source\":\"" + source.ToString().ToLower() + "\"" +
                               "}";
             return (GetDynamicObj(jsonIn));
         }
@@ -689,6 +718,64 @@ namespace Raiblocks
             string jsonOut = Post(jsonIn);
             KeyPair keyPair = JsonConvert.DeserializeObject<KeyPair>(jsonOut);
             return (keyPair);
+        }
+
+
+        /*  WalletAddKey:  Add an adhoc private key key to wallet
+         *  Response:
+            {  
+              "account" : "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000"
+            }
+         */
+        public string WalletAddKey(string wallet, string privateKey, bool work)
+        {
+            string jsonIn = "{\"action\":\"wallet_add\"," +
+                              "\"wallet\":\"" + wallet + "\"," +
+                              "\"key\":\"" + privateKey + "\"," +
+                              "\"work\":\"" + work.ToString().ToLower() + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn).account);
+        }
+
+
+        /*  WalletChangeSeed:  Changes seed for wallet to seed
+         *  Response:
+            {  
+              "success" : ""
+            }
+         */
+        public dynamic WalletChangeSeed(string wallet, string seed)
+        {
+            string jsonIn = "{\"action\":\"wallet_change_seed\"," +
+                              "\"wallet\":\"" + wallet + "\"," +
+                              "\"seed\":\"" + seed + "\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
+
+        /*  WalletCreate:  Creates a new random wallet id
+         *  Response:
+            {  
+              "wallet" : "000D1BAEC8EC208142C99059B393051BAC8380F9B5A2E6B2489A277D81789F3F"
+            }
+         */
+        public string WalletCreate()
+        {
+            string jsonIn = "{\"action\":\"wallet_create\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn).wallet);
+        }
+
+        /*  WalletDestroy:  Creates a new random wallet id
+         *  Response:
+            {  
+            }
+         */
+        public void WalletDestroy()
+        {
+            string jsonIn = "{\"action\":\"wallet_create\"" +
+                              "}";
+            dynamic d =GetDynamicObj(jsonIn);
         }
     }
 }

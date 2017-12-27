@@ -44,6 +44,15 @@
             this.txtIndex = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.button7 = new System.Windows.Forms.Button();
+            this.btnWalletCreate = new System.Windows.Forms.Button();
+            this.txtPrivateKey = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.btnWalletAddKey = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.btnWalletDestroy = new System.Windows.Forms.Button();
+            this.btnAccountsCreate = new System.Windows.Forms.Button();
+            this.txtNumAccounts = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // button1
@@ -87,7 +96,7 @@
             // 
             // btnBlockCount
             // 
-            this.btnBlockCount.Location = new System.Drawing.Point(593, 64);
+            this.btnBlockCount.Location = new System.Drawing.Point(742, 29);
             this.btnBlockCount.Name = "btnBlockCount";
             this.btnBlockCount.Size = new System.Drawing.Size(128, 23);
             this.btnBlockCount.TabIndex = 4;
@@ -97,7 +106,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(593, 106);
+            this.button2.Location = new System.Drawing.Point(742, 71);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(128, 23);
             this.button2.TabIndex = 5;
@@ -115,15 +124,14 @@
             // 
             // txtWallet
             // 
-            this.txtWallet.Location = new System.Drawing.Point(20, 269);
+            this.txtWallet.Location = new System.Drawing.Point(80, 269);
             this.txtWallet.Name = "txtWallet";
-            this.txtWallet.Size = new System.Drawing.Size(550, 20);
+            this.txtWallet.Size = new System.Drawing.Size(490, 20);
             this.txtWallet.TabIndex = 7;
-            this.txtWallet.Text = "XXX";
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(593, 147);
+            this.button3.Location = new System.Drawing.Point(742, 112);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(128, 23);
             this.button3.TabIndex = 8;
@@ -133,7 +141,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(593, 188);
+            this.button4.Location = new System.Drawing.Point(742, 153);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(128, 23);
             this.button4.TabIndex = 9;
@@ -143,7 +151,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(593, 228);
+            this.button5.Location = new System.Drawing.Point(742, 193);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(128, 23);
             this.button5.TabIndex = 10;
@@ -163,11 +171,11 @@
             // 
             // txtSeed
             // 
-            this.txtSeed.Location = new System.Drawing.Point(58, 314);
+            this.txtSeed.Location = new System.Drawing.Point(80, 312);
             this.txtSeed.Name = "txtSeed";
             this.txtSeed.Size = new System.Drawing.Size(409, 20);
             this.txtSeed.TabIndex = 12;
-            this.txtSeed.Text = "0000000000000000000000000000000000000000000000000000000000000000";
+            this.txtSeed.Text = "0000000100000000000000000000000000000000000000000000000000000000";
             // 
             // txtIndex
             // 
@@ -180,7 +188,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(20, 314);
+            this.label3.Location = new System.Drawing.Point(18, 314);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(32, 13);
             this.label3.TabIndex = 14;
@@ -195,11 +203,102 @@
             this.label4.TabIndex = 15;
             this.label4.Text = "index";
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(742, 234);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(128, 23);
+            this.button7.TabIndex = 16;
+            this.button7.Text = "Accounts Balances";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // btnWalletCreate
+            // 
+            this.btnWalletCreate.Location = new System.Drawing.Point(593, 269);
+            this.btnWalletCreate.Name = "btnWalletCreate";
+            this.btnWalletCreate.Size = new System.Drawing.Size(103, 23);
+            this.btnWalletCreate.TabIndex = 17;
+            this.btnWalletCreate.Text = "Wallet create";
+            this.btnWalletCreate.UseVisualStyleBackColor = true;
+            this.btnWalletCreate.Click += new System.EventHandler(this.btnWalletCreate_Click);
+            // 
+            // txtPrivateKey
+            // 
+            this.txtPrivateKey.Location = new System.Drawing.Point(80, 355);
+            this.txtPrivateKey.Name = "txtPrivateKey";
+            this.txtPrivateKey.Size = new System.Drawing.Size(409, 20);
+            this.txtPrivateKey.TabIndex = 18;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(15, 355);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(60, 13);
+            this.label5.TabIndex = 19;
+            this.label5.Text = "Private key";
+            // 
+            // btnWalletAddKey
+            // 
+            this.btnWalletAddKey.Location = new System.Drawing.Point(593, 352);
+            this.btnWalletAddKey.Name = "btnWalletAddKey";
+            this.btnWalletAddKey.Size = new System.Drawing.Size(103, 23);
+            this.btnWalletAddKey.TabIndex = 20;
+            this.btnWalletAddKey.Text = "Wallet add key";
+            this.btnWalletAddKey.UseVisualStyleBackColor = true;
+            this.btnWalletAddKey.Click += new System.EventHandler(this.btnWalletAddKey_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(13, 275);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(37, 13);
+            this.label6.TabIndex = 21;
+            this.label6.Text = "Wallet";
+            // 
+            // btnWalletDestroy
+            // 
+            this.btnWalletDestroy.Location = new System.Drawing.Point(742, 270);
+            this.btnWalletDestroy.Name = "btnWalletDestroy";
+            this.btnWalletDestroy.Size = new System.Drawing.Size(128, 23);
+            this.btnWalletDestroy.TabIndex = 22;
+            this.btnWalletDestroy.Text = "Wallet destroy";
+            this.btnWalletDestroy.UseVisualStyleBackColor = true;
+            // 
+            // btnAccountsCreate
+            // 
+            this.btnAccountsCreate.Location = new System.Drawing.Point(913, 112);
+            this.btnAccountsCreate.Name = "btnAccountsCreate";
+            this.btnAccountsCreate.Size = new System.Drawing.Size(100, 23);
+            this.btnAccountsCreate.TabIndex = 23;
+            this.btnAccountsCreate.Text = "Accounts Create";
+            this.btnAccountsCreate.UseVisualStyleBackColor = true;
+            this.btnAccountsCreate.Click += new System.EventHandler(this.btnAccountsCreate_Click);
+            // 
+            // txtNumAccounts
+            // 
+            this.txtNumAccounts.Location = new System.Drawing.Point(1020, 112);
+            this.txtNumAccounts.Name = "txtNumAccounts";
+            this.txtNumAccounts.Size = new System.Drawing.Size(39, 20);
+            this.txtNumAccounts.TabIndex = 24;
+            this.txtNumAccounts.Text = "2";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1032, 509);
+            this.ClientSize = new System.Drawing.Size(1172, 509);
+            this.Controls.Add(this.txtNumAccounts);
+            this.Controls.Add(this.btnAccountsCreate);
+            this.Controls.Add(this.btnWalletDestroy);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.btnWalletAddKey);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.txtPrivateKey);
+            this.Controls.Add(this.btnWalletCreate);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtIndex);
@@ -241,6 +340,15 @@
         private System.Windows.Forms.TextBox txtIndex;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button btnWalletCreate;
+        private System.Windows.Forms.TextBox txtPrivateKey;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button btnWalletAddKey;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button btnWalletDestroy;
+        private System.Windows.Forms.Button btnAccountsCreate;
+        private System.Windows.Forms.TextBox txtNumAccounts;
     }
 }
 
