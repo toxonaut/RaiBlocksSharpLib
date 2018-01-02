@@ -98,20 +98,70 @@ namespace Raiblocks
 
         private void btnAvailableSupply_Click(object sender, EventArgs e)
         {
-            richTextBox1.Text = "Available: " + API.Rai.AvailableSupply().ToString();
+            richTextBox1.Text = "Available: " + API.AvailableSupply(XRBUnit.XRB).ToString();
+        }
+
+        private void btnBlockAccount_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "account: " + API.BlockAccount(txtBlock.Text);
         }
 
         private void btnBlockCnt_Click(object sender, EventArgs e)
         {
             var blockCount = API.Rai.BlockCount();
             richTextBox1.Text = "count: " + blockCount.count + "\n";
-            richTextBox1.Text += "unchecked: " + blockCount.un_checked + "\n";
+            richTextBox1.Text += "unchecked: " + blockCount.@unchecked + "\n";
+        }
+        private void btnBlockCountByType_Click(object sender, EventArgs e)
+        {
+            var blockCount = API.Rai.BlockCountByType();
+            richTextBox1.Text = "send: " + blockCount.send + "\n";
+            richTextBox1.Text += "receive: " + blockCount.receive + "\n";
+            richTextBox1.Text += "open: " + blockCount.open + "\n";
+            richTextBox1.Text += "change: " + blockCount.change + "\n";
         }
 
         private void btnChain_Click(object sender, EventArgs e)
         {
-            List<string> blocks = API.Chain(txtBlock.Text, Convert.ToInt32(txtBlockCount.Text));
-            richTextBox1.Text = "blocks: " + blocks.Aggregate((i, j) => i + "," + j);
+            ChainBlocks blocks = API.Chain(txtBlock.Text, Convert.ToInt32(txtBlockCount.Text));
+            richTextBox1.Text = "blocks: " + blocks.blocks.Aggregate((i, j) => i + "," + j);
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            List<string> hashes = new List<string>();
+            hashes.Add("E71AF3E9DD86BBD8B4620EFA63E065B34D358CFC091ACB4E103B965F95783321");
+            hashes.Add("C6D1A9E4F631E5BD9AF104C9A08535F7FBA69252C655F5EE52FE7B20B13894CB");
+
+
+            BlocksAdditionalContainer cont = API.RetrieveMultipleBlocksWithAdditionalInfo(hashes);
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            List<string> hashes = new List<string>();
+            hashes.Add("E71AF3E9DD86BBD8B4620EFA63E065B34D358CFC091ACB4E103B965F95783321");
+            hashes.Add("C6D1A9E4F631E5BD9AF104C9A08535F7FBA69252C655F5EE52FE7B20B13894CB");
+
+
+            List<Block> cont = API.RetrieveMultipleBlocks(hashes);
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            Block block = API.RetrieveBlock(txtBlock.Text);
+        }
+
+        private void btnAccountsPending_Click(object sender, EventArgs e)
+        {
+            List<string> accounts = new List<string>();
+            accounts.Add("xrb_3e77ic1xarfn6mbbxthh38ibz8rr3gx7ikap6589bmcsdsmuyccd4hy8g8f5");
+            accounts.Add("xrb_3d8k363kpt1kzh5n11qhmbk8esxyb83wmp69dst9ujiqcx919h4ybpgpwbrt");
+            accounts.Add("xrb_3azxczhmrws5sxm4ezy1xf57tuh67crehjw1oi98ygynas71wyop1jt1p8wx");
+
+
+            List<AccountBlocks> blocks = API.AccountsPending(accounts, 3, Convert.ToDecimal("1000000000000000000000000"),XRBUnit.raw, XRBUnit.XRB);
+
         }
     }
 }

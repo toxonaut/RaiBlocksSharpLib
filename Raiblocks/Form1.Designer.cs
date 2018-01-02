@@ -59,6 +59,12 @@
             this.txtBlockCount = new System.Windows.Forms.TextBox();
             this.txtBlock = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.btnBlockCountByType = new System.Windows.Forms.Button();
+            this.btnBlockAccount = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
+            this.btnAccountsPending = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -293,7 +299,7 @@
             // 
             // btnAvailableSupply
             // 
-            this.btnAvailableSupply.Location = new System.Drawing.Point(913, 28);
+            this.btnAvailableSupply.Location = new System.Drawing.Point(913, 295);
             this.btnAvailableSupply.Name = "btnAvailableSupply";
             this.btnAvailableSupply.Size = new System.Drawing.Size(100, 23);
             this.btnAvailableSupply.TabIndex = 25;
@@ -303,7 +309,7 @@
             // 
             // btnBlockCnt
             // 
-            this.btnBlockCnt.Location = new System.Drawing.Point(913, 153);
+            this.btnBlockCnt.Location = new System.Drawing.Point(913, 493);
             this.btnBlockCnt.Name = "btnBlockCnt";
             this.btnBlockCnt.Size = new System.Drawing.Size(100, 23);
             this.btnBlockCnt.TabIndex = 26;
@@ -313,7 +319,7 @@
             // 
             // btnChain
             // 
-            this.btnChain.Location = new System.Drawing.Point(913, 268);
+            this.btnChain.Location = new System.Drawing.Point(913, 570);
             this.btnChain.Name = "btnChain";
             this.btnChain.Size = new System.Drawing.Size(100, 23);
             this.btnChain.TabIndex = 27;
@@ -323,7 +329,7 @@
             // 
             // txtBlockCount
             // 
-            this.txtBlockCount.Location = new System.Drawing.Point(1020, 270);
+            this.txtBlockCount.Location = new System.Drawing.Point(1020, 572);
             this.txtBlockCount.Name = "txtBlockCount";
             this.txtBlockCount.Size = new System.Drawing.Size(39, 20);
             this.txtBlockCount.TabIndex = 28;
@@ -335,6 +341,7 @@
             this.txtBlock.Name = "txtBlock";
             this.txtBlock.Size = new System.Drawing.Size(409, 20);
             this.txtBlock.TabIndex = 29;
+            this.txtBlock.Text = "E71AF3E9DD86BBD8B4620EFA63E065B34D358CFC091ACB4E103B965F95783321";
             // 
             // label7
             // 
@@ -345,11 +352,77 @@
             this.label7.TabIndex = 30;
             this.label7.Text = "Block";
             // 
+            // btnBlockCountByType
+            // 
+            this.btnBlockCountByType.Location = new System.Drawing.Point(913, 533);
+            this.btnBlockCountByType.Name = "btnBlockCountByType";
+            this.btnBlockCountByType.Size = new System.Drawing.Size(100, 23);
+            this.btnBlockCountByType.TabIndex = 31;
+            this.btnBlockCountByType.Text = "Block Count By Type";
+            this.btnBlockCountByType.UseVisualStyleBackColor = true;
+            this.btnBlockCountByType.Click += new System.EventHandler(this.btnBlockCountByType_Click);
+            // 
+            // btnBlockAccount
+            // 
+            this.btnBlockAccount.Location = new System.Drawing.Point(913, 455);
+            this.btnBlockAccount.Name = "btnBlockAccount";
+            this.btnBlockAccount.Size = new System.Drawing.Size(100, 23);
+            this.btnBlockAccount.TabIndex = 32;
+            this.btnBlockAccount.Text = "Block account";
+            this.btnBlockAccount.UseVisualStyleBackColor = true;
+            this.btnBlockAccount.Click += new System.EventHandler(this.btnBlockAccount_Click);
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(913, 419);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(146, 23);
+            this.button8.TabIndex = 33;
+            this.button8.Text = "Ret. Mult Blocks Add";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(913, 378);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(146, 23);
+            this.button9.TabIndex = 34;
+            this.button9.Text = "Retrieve Mult Blocks";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(913, 338);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(100, 23);
+            this.button10.TabIndex = 35;
+            this.button10.Text = "Retrieve Block";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
+            // btnAccountsPending
+            // 
+            this.btnAccountsPending.Location = new System.Drawing.Point(913, 252);
+            this.btnAccountsPending.Name = "btnAccountsPending";
+            this.btnAccountsPending.Size = new System.Drawing.Size(146, 23);
+            this.btnAccountsPending.TabIndex = 36;
+            this.btnAccountsPending.Text = "Accounts Pending";
+            this.btnAccountsPending.UseVisualStyleBackColor = true;
+            this.btnAccountsPending.Click += new System.EventHandler(this.btnAccountsPending_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1172, 509);
+            this.ClientSize = new System.Drawing.Size(1172, 605);
+            this.Controls.Add(this.btnAccountsPending);
+            this.Controls.Add(this.button10);
+            this.Controls.Add(this.button9);
+            this.Controls.Add(this.button8);
+            this.Controls.Add(this.btnBlockAccount);
+            this.Controls.Add(this.btnBlockCountByType);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.txtBlock);
             this.Controls.Add(this.txtBlockCount);
@@ -421,6 +494,12 @@
         private System.Windows.Forms.TextBox txtBlockCount;
         private System.Windows.Forms.TextBox txtBlock;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btnBlockCountByType;
+        private System.Windows.Forms.Button btnBlockAccount;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button btnAccountsPending;
     }
 }
 

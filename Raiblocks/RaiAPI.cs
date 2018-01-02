@@ -47,7 +47,7 @@ namespace Raiblocks
             dynamic history = accountHistory.history;
             for (int i = 0; i < history.Count; i++)
             {
-                History hist = new History() { account = account, amount = Rai.UnitConvert(Convert.ToDouble(history[i].amount), XRBUnit.raw, unit), hash = history[i].hash, type = history[i].type };
+                History hist = new History() { account = account, amount = Rai.UnitConvert(Convert.ToDecimal(history[i].amount), XRBUnit.raw, unit), hash = history[i].hash, type = history[i].type };
                 historyList.Add(hist);
             }
             return historyList;
@@ -75,7 +75,7 @@ namespace Raiblocks
         {
 
             dynamic item = Rai.AccountsBalances(accounts);
-            return AccountsBalancesBase(item,unit);
+            return AccountsBalancesBase(item, unit);
         }
 
         private List<AccountBalance> AccountsBalancesBase(dynamic item, XRBUnit unit)
@@ -91,16 +91,47 @@ namespace Raiblocks
                 foreach (var property2 in propertyValues2.Keys)
                 {
                     if (property2 == "balance")
-                        ab.balance = Rai.UnitConvert(Convert.ToDouble(propertyValues2[property2]), XRBUnit.raw, unit);
+                        ab.balance = Rai.UnitConvert(Convert.ToDecimal(propertyValues2[property2]), XRBUnit.raw, unit);
 
                     if (property2 == "pending")
-                        ab.pending = Rai.UnitConvert(Convert.ToDouble(propertyValues2[property2]), XRBUnit.raw, unit);
+                        ab.pending = Rai.UnitConvert(Convert.ToDecimal(propertyValues2[property2]), XRBUnit.raw, unit);
                 }
                 accountBalances.Add(ab);
             }
             return accountBalances;
         }
 
+        public List<AccountBlocks> AccountsPending(List<string> accounts, int count, XRBUnit unit = XRBUnit.XRB)
+        {
+            return Rai.AccountsPending(accounts, count, unit);
+        }
+        public List<AccountBlocks> AccountsPending(List<string> accounts, int count, decimal threshold,  XRBUnit thresholdUnit = XRBUnit.raw, XRBUnit displayUnit = XRBUnit.XRB)
+        {
+            return Rai.AccountsPending(accounts, count, threshold, thresholdUnit, displayUnit);
+        }
+        public decimal AvailableSupply(XRBUnit unit)
+        {
+            decimal supply = Rai.UnitConvert(Rai.AvailableSupply(), XRBUnit.raw, unit);
+            return supply;
+        }
+        public Block RetrieveBlock(string hash)
+        {
+            Block block = Rai.RetrieveBlock(hash);
+
+            return Rai.RetrieveBlock(hash);
+        }
+        public List<Block> RetrieveMultipleBlocks(List<string> hashes,  XRBUnit unit = XRBUnit.raw)
+        {
+            return Rai.RetrieveMultipleBlocks(hashes, unit);
+        }
+        public BlocksAdditionalContainer RetrieveMultipleBlocksWithAdditionalInfo(List<string> hashes, bool pending = false, bool source = false)
+        {
+            return Rai.RetrieveMultipleBlocksWithAdditionalInfo(hashes);
+        }
+        public string BlockAccount(string hash)
+        {
+            return Rai.BlockAccount(hash);
+        }
         public (int count, int un_checked) BlockCount()
         {
             dynamic dynObj = Rai.BlockCount();
@@ -129,11 +160,9 @@ namespace Raiblocks
             return returnVal;
         }
 
-        public List<string> Chain(string block, int count)
+        public ChainBlocks Chain(string block, int count)
         {
-            dynamic dynObj = Rai.Chain(block, count);
-            List<string> blockHashes = dynObj.blocks;
-            return blockHashes;
+            return Rai.Chain(block, count);
         }
 
         
@@ -143,10 +172,10 @@ namespace Raiblocks
             return dynObj.account;
         }
         
-        public (double balance, double pending) WalletTotalBalance(string wallet, XRBUnit unit = XRBUnit.XRB)
+        public (decimal balance, decimal pending) WalletTotalBalance(string wallet, XRBUnit unit = XRBUnit.XRB)
         {
             dynamic dynObj = Rai.WalletTotalBalance(wallet);
-            return (Rai.UnitConvert(Convert.ToDouble(dynObj.balance), XRBUnit.raw, unit), Rai.UnitConvert(Convert.ToDouble(dynObj.pending), XRBUnit.raw, unit));
+            return (Rai.UnitConvert(Convert.ToDecimal(dynObj.balance), XRBUnit.raw, unit), Rai.UnitConvert(Convert.ToDecimal(dynObj.pending), XRBUnit.raw, unit));
         }
 
         /* todo: implement threshold parameter */
