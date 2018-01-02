@@ -16,13 +16,13 @@ namespace Raiblocks
     public class AccountBalance
     {
         public string account { get; set; }
-        public decimal balance { get; set; }
-        public decimal pending { get; set; }
+        public string balance { get; set; }
+        public string pending { get; set; }
     }
     public class AccountBlock
     {
         public string hash { get; set; }
-        public decimal amount { get; set; }
+        public string amount { get; set; }
         public string source { get; set; }
     }
     public class AccountBlocks
@@ -35,7 +35,7 @@ namespace Raiblocks
     {
         public string hash { get; set; }
         public string block_account { get; set; }
-        public decimal amount { get; set; }
+        public string amount { get; set; }
 
         public string type { get; set; }
         public string account { get; set; }
@@ -43,7 +43,7 @@ namespace Raiblocks
         public string destination { get; set; }
         public string source { get; set; }
         public string representative { get; set; }
-        public decimal balance { get; set; }
+        public string balance { get; set; }
         public string work { get; set; }
         public string signature { get; set; }
     }
@@ -161,41 +161,116 @@ namespace Raiblocks
             }
             return result;
         }
-        public decimal UnitConvert(decimal input, XRBUnit input_unit, XRBUnit output_unit)
+        public string Shift (int numerics, string input)
         {
-            decimal output=0;
+            string result = "";
+            string numBeforeComma = "";
+            string numAfterComma = input.Substring(input.IndexOf(".") + 1);
+            if (input.IndexOf(".")>0)
+            {
+                numBeforeComma = input.Substring(0, input.IndexOf("."));
+            }
+
+            if (numerics >0)
+            {
+                string zeros = new string('0', numerics);
+                int missingZeros = numerics - numAfterComma.Length;
+                if (missingZeros >-1)
+                {
+                    result = numBeforeComma + numAfterComma + zeros.Substring(0, missingZeros);
+                }
+                else
+                {
+                    result = numBeforeComma + numAfterComma.Substring(0, numAfterComma.Length + missingZeros) + "." + numAfterComma.Substring(numAfterComma.Length + missingZeros);
+                }
+
+            }
+            else
+            {
+                if (numBeforeComma.Length + numerics>0)
+                {
+                    result = numBeforeComma.Substring(0, numBeforeComma.Length + numerics) + "." + numBeforeComma.Substring(numBeforeComma.Length + numerics) + numAfterComma;
+                }
+                else
+                {
+                    result = "0" + "." + new string ('0',Math.Abs(numBeforeComma.Length + numerics))+ numBeforeComma + numAfterComma;
+                }
+            }
+            return result;
+        }
+
+
+        public string UnitConvert(string input, XRBUnit input_unit, XRBUnit output_unit)
+        {
+            string output = "";
             switch (input_unit)
             {
                 case XRBUnit.raw: output = input; break;
-                case XRBUnit.XRB: output = input * Convert.ToDecimal(BigInteger.Parse("1000000000000000000000000000000000000")); break; //shift 30, 1 with 31 zeros
-                case XRBUnit.Trai: output = input * Convert.ToDecimal(BigInteger.Parse("1000000000000000000000000000000000000")); break; // shift 36
-                case XRBUnit.Grai: output = input * Convert.ToDecimal(BigInteger.Parse("1000000000000000000000000000000000")); break; // 33
-                case XRBUnit.Mrai: output = input * Convert.ToDecimal(BigInteger.Parse("1000000000000000000000000000000")); break; // 30
-                case XRBUnit.krai: output = input * Convert.ToDecimal(BigInteger.Parse("1000000000000000000000000000")); break; // 27
-                case XRBUnit.rai: output = input * Convert.ToDecimal(BigInteger.Parse("1000000000000000000000000")); break; // 24
-                case XRBUnit.mrai: output = input * Convert.ToDecimal(BigInteger.Parse("1000000000000000000000")); break; // 21
-                case XRBUnit.urai: output = input * Convert.ToDecimal(BigInteger.Parse("1000000000000000000")); break; // 18
-                case XRBUnit.prai: output = input * Convert.ToDecimal(BigInteger.Parse("1000000000000000")); break; // 15
+                case XRBUnit.XRB: output = Shift(30,input); break; //shift 30, 1 with 31 zeros
+                case XRBUnit.Trai: output = Shift(36, input); break; // shift 36
+                case XRBUnit.Grai: output = Shift(33, input); break; // 33
+                case XRBUnit.Mrai: output = Shift(30, input); break; // 30
+                case XRBUnit.krai: output = Shift(27, input); break; // 27
+                case XRBUnit.rai: output = Shift(24, input); break; // 24
+                case XRBUnit.mrai: output = Shift(21, input); break; // 21
+                case XRBUnit.urai: output = Shift(18, input); break; // 18
+                case XRBUnit.prai: output = Shift(15, input); break; // 15
                 default: output = input; break;
             }
             input = output;
             switch (output_unit)
             {
                 case XRBUnit.raw: output = input; break;
-                case XRBUnit.XRB: output = input / Convert.ToDecimal(BigInteger.Parse("1000000000000000000000000000000")); break; //shift 30, 1 with 31 zeros
-                case XRBUnit.Trai: output = input / Convert.ToDecimal(BigInteger.Parse("1000000000000000000000000000000000000")); break; // shift 36
-                case XRBUnit.Grai: output = input / Convert.ToDecimal(BigInteger.Parse("1000000000000000000000000000000000")); break; // 33
-                case XRBUnit.Mrai: output = input / Convert.ToDecimal(BigInteger.Parse("1000000000000000000000000000000")); break; // 30
-                case XRBUnit.krai: output = input / Convert.ToDecimal(BigInteger.Parse("1000000000000000000000000000")); break; // 27
-                case XRBUnit.rai: output = input / Convert.ToDecimal(BigInteger.Parse("1000000000000000000000000")); break; // 24
-                case XRBUnit.mrai: output = input / Convert.ToDecimal(BigInteger.Parse("1000000000000000000000")); break; // 21
-                case XRBUnit.urai: output = input / Convert.ToDecimal(BigInteger.Parse("1000000000000000000")); break; // 18
-                case XRBUnit.prai: output = input / Convert.ToDecimal(BigInteger.Parse("1000000000000000")); break; // 15
+                case XRBUnit.XRB: output = Shift(-30, input); break; //shift 30, 1 with 31 zeros
+                case XRBUnit.Trai: output = Shift(-36, input); break; // shift 36
+                case XRBUnit.Grai: output = Shift(-33, input); break; // 33
+                case XRBUnit.Mrai: output = Shift(-30, input); break; // 30
+                case XRBUnit.krai: output = Shift(-27, input); break; // 27
+                case XRBUnit.rai: output = Shift(-24, input); break; // 24
+                case XRBUnit.mrai: output = Shift(-21, input); break; // 21
+                case XRBUnit.urai: output = Shift(-18, input); break; // 18
+                case XRBUnit.prai: output = Shift(-15, input); break; // 15
                 default: output = input; break;
             }
 
             return output;
         }
+        /*
+        public decimal UnitConvert2(decimal input, XRBUnit input_unit, XRBUnit output_unit)
+        {
+            decimal output=0;
+            switch (input_unit)
+            {
+                case XRBUnit.raw: output = input; break;
+                case XRBUnit.XRB: output = input * BigInteger.Parse("1000000000000000000000000000000000000")); break; //shift 30, 1 with 31 zeros
+                case XRBUnit.Trai: output = input * BigInteger.Parse("1000000000000000000000000000000000000")); break; // shift 36
+                case XRBUnit.Grai: output = input * BigInteger.Parse("1000000000000000000000000000000000")); break; // 33
+                case XRBUnit.Mrai: output = input * BigInteger.Parse("1000000000000000000000000000000")); break; // 30
+                case XRBUnit.krai: output = input * BigInteger.Parse("1000000000000000000000000000")); break; // 27
+                case XRBUnit.rai: output = input * BigInteger.Parse("1000000000000000000000000")); break; // 24
+                case XRBUnit.mrai: output = input * BigInteger.Parse("1000000000000000000000")); break; // 21
+                case XRBUnit.urai: output = input * BigInteger.Parse("1000000000000000000")); break; // 18
+                case XRBUnit.prai: output = input * BigInteger.Parse("1000000000000000")); break; // 15
+                default: output = input; break;
+            }
+            input = output;
+            switch (output_unit)
+            {
+                case XRBUnit.raw: output = input; break;
+                case XRBUnit.XRB: output = input / BigInteger.Parse("1000000000000000000000000000000")); break; //shift 30, 1 with 31 zeros
+                case XRBUnit.Trai: output = input / BigInteger.Parse("1000000000000000000000000000000000000")); break; // shift 36
+                case XRBUnit.Grai: output = input / BigInteger.Parse("1000000000000000000000000000000000")); break; // 33
+                case XRBUnit.Mrai: output = input / BigInteger.Parse("1000000000000000000000000000000")); break; // 30
+                case XRBUnit.krai: output = input / BigInteger.Parse("1000000000000000000000000000")); break; // 27
+                case XRBUnit.rai: output = input / BigInteger.Parse("1000000000000000000000000")); break; // 24
+                case XRBUnit.mrai: output = input / BigInteger.Parse("1000000000000000000000")); break; // 21
+                case XRBUnit.urai: output = input / BigInteger.Parse("1000000000000000000")); break; // 18
+                case XRBUnit.prai: output = input / BigInteger.Parse("1000000000000000")); break; // 15
+                default: output = input; break;
+            }
+
+            return output;
+        }*/
         private dynamic GetDynamicObj(string jsonIn)
         {
             string jsonOut = Post(jsonIn);
@@ -241,7 +316,7 @@ namespace Raiblocks
                               "\"account\":\"" + account + "\"}";
             string jsonOut = Post(jsonIn);
             dynamic dynObj = JsonConvert.DeserializeObject(jsonOut);
-            dynObj.balance = UnitConvert(Convert.ToDecimal(dynObj.balance), XRBUnit.raw, unit);
+            dynObj.balance = UnitConvert(dynObj.balance, XRBUnit.raw, unit);
             return (dynObj);
         }
 
@@ -283,9 +358,9 @@ namespace Raiblocks
             string jsonOut = Post(jsonIn);
             dynamic dynObj = JsonConvert.DeserializeObject(jsonOut);
 
-            dynObj.balance = UnitConvert(Convert.ToDecimal(dynObj.balance), XRBUnit.raw, unit);
-            if (weight) dynObj.weight = UnitConvert(Convert.ToDecimal(dynObj.weight), XRBUnit.raw, unit);
-            if (pending) dynObj.pending = UnitConvert(Convert.ToDecimal(dynObj.pending), XRBUnit.raw, unit);
+            dynObj.balance = UnitConvert(dynObj.balance, XRBUnit.raw, unit);
+            if (weight) dynObj.weight = UnitConvert(dynObj.weight, XRBUnit.raw, unit);
+            if (pending) dynObj.pending = UnitConvert(dynObj.pending, XRBUnit.raw, unit);
 
             return (dynObj);
         }
@@ -560,7 +635,7 @@ namespace Raiblocks
                 }  
             }
         */
-        public List<AccountBlocks> AccountsPending(List<string> accounts, int count,  decimal threshold, XRBUnit thresholdUnit, XRBUnit displayUnit)
+        public List<AccountBlocks> AccountsPending(List<string> accounts, int count,  string threshold, XRBUnit thresholdUnit, XRBUnit displayUnit)
         {
             string accountsString = CommaSeparated(accounts);
             string jsonIn = "{\"action\":\"accounts_pending\"," +
@@ -580,7 +655,7 @@ namespace Raiblocks
                 {
                     AccountBlock accountBlock = new AccountBlock();
                     accountBlock.hash = hash.Path;
-                    accountBlock.amount = UnitConvert(Convert.ToDecimal(hash.First), XRBUnit.raw, displayUnit);
+                    accountBlock.amount = UnitConvert(hash.First.ToString(), XRBUnit.raw, displayUnit);
                     accountBlocks.blocks.Add(accountBlock);
                 }
                 accountBlocksList.Add(accountBlocks);
@@ -618,7 +693,7 @@ namespace Raiblocks
             BlocksMultipleResponse blocksResponse = JsonConvert.DeserializeObject<BlocksMultipleResponse>(jsonOut);
             foreach (var item in blocksResponse.blocks._extraStuff)
             {
-                Block block = new Block() { hash = item.Key, type = item.Value["type"]?.ToString(), source = item.Value["source"]?.ToString(), amount = UnitConvert(Convert.ToDecimal(item.Value["amount"]), XRBUnit.raw, unit), block_account = item.Value["block_account"]?.ToString(), representative = item.Value["representative"]?.ToString(), previous = item.Value["previous"]?.ToString(), destination = item.Value["destination"]?.ToString(), balance = UnitConvert(Convert.ToDecimal(item.Value["balance"]), XRBUnit.raw, unit), work = item.Value["work"].ToString(), signature = item.Value["signature"].ToString() };
+                Block block = new Block() { hash = item.Key, type = item.Value["type"]?.ToString(), source = item.Value["source"]?.ToString(), amount = UnitConvert(item.Value["amount"].ToString(), XRBUnit.raw, unit), block_account = item.Value["block_account"]?.ToString(), representative = item.Value["representative"]?.ToString(), previous = item.Value["previous"]?.ToString(), destination = item.Value["destination"]?.ToString(), balance = UnitConvert(item.Value["balance"].ToString(), XRBUnit.raw, unit), work = item.Value["work"].ToString(), signature = item.Value["signature"].ToString() };
             }
             return (GetDynamicObj(jsonIn));
         }
@@ -629,12 +704,12 @@ namespace Raiblocks
               "available": "10000"  
             }
          */
-        public decimal AvailableSupply()
+        public string AvailableSupply()
         {
             string jsonIn = "{\"action\":\"available_supply\"" +
                               "}";
             dynamic dynObj = GetDynamicObj(jsonIn);            
-            return (Convert.ToDecimal(dynObj.available));
+            return (dynObj.available.ToString());
         }
 
         /*  Retrieve block:  Retrieves a json representation of block
@@ -690,7 +765,7 @@ namespace Raiblocks
             BlocksMultipleResponse blocksResponse = JsonConvert.DeserializeObject<BlocksMultipleResponse>(jsonOut);
             foreach (var item in blocksResponse.blocks._extraStuff)
             {
-                Block block = new Block() { hash = item.Key, type= item.Value["type"]?.ToString(), source= item.Value["source"]?.ToString(), amount = UnitConvert(Convert.ToDecimal(item.Value["amount"]), XRBUnit.raw, unit), block_account= item.Value["block_account"]?.ToString(), representative= item.Value["representative"]?.ToString(), previous = item.Value["previous"]?.ToString(), destination= item.Value["destination"]?.ToString(), balance= UnitConvert(Convert.ToDecimal(item.Value["balance"]), XRBUnit.raw, unit), work= item.Value["work"].ToString(), signature= item.Value["signature"].ToString() };
+                Block block = new Block() { hash = item.Key, type= item.Value["type"]?.ToString(), source= item.Value["source"]?.ToString(), amount = UnitConvert(item.Value["amount"].ToString(), XRBUnit.raw, unit), block_account= item.Value["block_account"]?.ToString(), representative= item.Value["representative"]?.ToString(), previous = item.Value["previous"]?.ToString(), destination= item.Value["destination"]?.ToString(), balance= UnitConvert(item.Value["balance"].ToString(), XRBUnit.raw, unit), work= item.Value["work"].ToString(), signature= item.Value["signature"].ToString() };
                 blocks.Add(block);
             }
             return (blocks);
@@ -729,7 +804,7 @@ namespace Raiblocks
             BlocksAdditionalResponse blocksResponse = JsonConvert.DeserializeObject<BlocksAdditionalResponse>(jsonOut);
             foreach (var item in  blocksResponse.blocks._extraStuff)
             {
-                Block block = new Block() { hash = item.Key, block_account= item.Value["block_account"]?.ToString(), amount = Convert.ToDecimal(item.Value["amount"]),  type = item.Value["contents"]["type"]?.ToString(), previous = item.Value["contents"]["previous"]?.ToString(), destination = item.Value["contents"]["destination"]?.ToString(), representative= item.Value["contents"]["representative"]?.ToString(), source= item.Value["contents"]["source"]?.ToString(), balance = Convert.ToDecimal(item.Value["contents"]["balance"]), work = item.Value["contents"]["work"].ToString(), signature = item.Value["contents"]["signature"].ToString() };
+                Block block = new Block() { hash = item.Key, block_account= item.Value["block_account"]?.ToString(), amount = item.Value["amount"].ToString(),  type = item.Value["contents"]["type"]?.ToString(), previous = item.Value["contents"]["previous"]?.ToString(), destination = item.Value["contents"]["destination"]?.ToString(), representative= item.Value["contents"]["representative"]?.ToString(), source= item.Value["contents"]["source"]?.ToString(), balance = item.Value["contents"]["balance"].ToString(), work = item.Value["contents"]["work"].ToString(), signature = item.Value["contents"]["signature"].ToString() };
                 blocks.Add(block);
             }
             return (blocksResponse.blocks);

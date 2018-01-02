@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,7 +22,7 @@ namespace Raiblocks
 
         private void button1_Click(object sender, EventArgs e)
         {
-            label2.Text = Math.Round(API.AccountBalance(txtAccount.Text).balance,4).ToString()+ " XRB";
+            label2.Text = API.AccountBalance(txtAccount.Text).balance + " XRB";
         }
 
         private void btnBlockCount_Click(object sender, EventArgs e)
@@ -160,8 +161,18 @@ namespace Raiblocks
             accounts.Add("xrb_3azxczhmrws5sxm4ezy1xf57tuh67crehjw1oi98ygynas71wyop1jt1p8wx");
 
 
-            List<AccountBlocks> blocks = API.AccountsPending(accounts, 3, Convert.ToDecimal("1000000000000000000000000"),XRBUnit.raw, XRBUnit.XRB);
+            List<AccountBlocks> blocks = API.AccountsPending(accounts, 3, "1000000000000000000000000",XRBUnit.raw, XRBUnit.XRB);
 
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            API.Rai.UnitConvert("1.123456789012345", XRBUnit.prai, XRBUnit.prai);
+
+          //  API.Rai.UnitConvert2("10.12", XRBUnit.prai, XRBUnit.prai);
+
+            
+         
         }
     }
 }
