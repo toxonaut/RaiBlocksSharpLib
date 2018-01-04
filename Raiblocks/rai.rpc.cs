@@ -13,108 +13,7 @@ using System.Threading.Tasks;
 
 namespace Raiblocks
 {
-    public class AccountBalance
-    {
-        public string account { get; set; }
-        public string balance { get; set; }
-        public string pending { get; set; }
-    }
-    public class AccountBlock
-    {
-        public string hash { get; set; }
-        public string amount { get; set; }
-        public string source { get; set; }
-    }
-    public class AccountBlocks
-    {
-        public string account { get; set; }
-        public List<AccountBlock> blocks { get; set; }
-    }
-
-    public class Block
-    {
-        public string hash { get; set; }
-        public string block_account { get; set; }
-        public string amount { get; set; }
-
-        public string type { get; set; }
-        public string account { get; set; }
-        public string previous { get; set; }
-        public string destination { get; set; }
-        public string source { get; set; }
-        public string representative { get; set; }
-        public string balance { get; set; }
-        public string work { get; set; }
-        public string signature { get; set; }
-    }
-    public class BlockAdditional
-    {
-        public string block_account { get; set; }
-        public string amount { get; set; }
-        public Block contents { get; set; }
-    }
-
-    public class BlocksAdditionalContainer
-    {
-        [JsonExtensionData]
-        public IDictionary<string, JToken> _extraStuff;
-    }
-    public class BlocksContainer
-    {
-        [JsonExtensionData]
-        public IDictionary<string, JToken> _extraStuff;
-    }
-    public class BlocksAdditionalResponse
-    {
-        public BlocksAdditionalContainer blocks { get; set; }
-    }
-    public class BlocksMultipleResponse
-    {
-        public BlocksContainer blocks { get; set; }
-    }
-    public class BlocksResponse
-    {
-        public Block contents { get; set; }
-    }
-    public class Blocks2
-    {
-        // known field
-        public decimal TaxRate { get; set; }
-
-        // extra fields
-        [JsonExtensionData]
-        private IDictionary<string, JToken> _extraStuff;
-    }
-    public class ChainBlocks
-    {
-        public List<string> blocks { get; set; }
-    }
-    public class Frontier
-    {
-        public string account { get; set; }
-        public string hash { get; set; }
-    }
-
-    public class History
-    {
-        public string hash { get; set; }
-        public string type { get; set; }
-        public string account { get; set; }
-        public decimal amount { get; set; }
-    }
-    public class KeyPair
-    {
-        [JsonProperty("private")]
-        public string privateKey { get; set; }
-        [JsonProperty("public")]
-        public string publicKey { get; set; }
-        [JsonProperty("account")]
-        public string account { get; set; }
-    }
-    public enum XRBUnit
-    {
-        raw, XRB, Trai, Grai, Mrai, krai, rai, mrai, urai, prai
-    }
+    
 
     
     class Rai
@@ -166,34 +65,46 @@ namespace Raiblocks
             string result = "";
             string numBeforeComma = "";
             string numAfterComma = input.Substring(input.IndexOf(".") + 1);
-            if (input.IndexOf(".")>0)
+            if (input.IndexOf(".") > 0)
             {
                 numBeforeComma = input.Substring(0, input.IndexOf("."));
-            }
 
-            if (numerics >0)
-            {
-                string zeros = new string('0', numerics);
-                int missingZeros = numerics - numAfterComma.Length;
-                if (missingZeros >-1)
+
+                if (numerics > 0)
                 {
-                    result = numBeforeComma + numAfterComma + zeros.Substring(0, missingZeros);
+                    string zeros = new string('0', numerics);
+                    int missingZeros = numerics - numAfterComma.Length;
+                    if (missingZeros > -1)
+                    {
+                        result = numBeforeComma + numAfterComma + zeros.Substring(0, missingZeros);
+                    }
+                    else
+                    {
+                        result = numBeforeComma + numAfterComma.Substring(0, numAfterComma.Length + missingZeros) + "." + numAfterComma.Substring(numAfterComma.Length + missingZeros);
+                    }
+
                 }
                 else
                 {
-                    result = numBeforeComma + numAfterComma.Substring(0, numAfterComma.Length + missingZeros) + "." + numAfterComma.Substring(numAfterComma.Length + missingZeros);
+                    if (numBeforeComma.Length + numerics > 0)
+                    {
+                        result = numBeforeComma.Substring(0, numBeforeComma.Length + numerics) + "." + numBeforeComma.Substring(numBeforeComma.Length + numerics) + numAfterComma;
+                    }
+                    else
+                    {
+                        result = "0" + "." + new string('0', Math.Abs(numBeforeComma.Length + numerics)) + numBeforeComma + numAfterComma;
+                    }
                 }
-
             }
             else
             {
-                if (numBeforeComma.Length + numerics>0)
+                if (input.Length + numerics>0)
                 {
-                    result = numBeforeComma.Substring(0, numBeforeComma.Length + numerics) + "." + numBeforeComma.Substring(numBeforeComma.Length + numerics) + numAfterComma;
+                    result = (input.Substring(0, input.Length + numerics) + "." + input.Substring(input.Length - (input.Length + numerics))).TrimEnd('0').TrimEnd('.');
                 }
                 else
                 {
-                    result = "0" + "." + new string ('0',Math.Abs(numBeforeComma.Length + numerics))+ numBeforeComma + numAfterComma;
+                    result = ("0" + "." + new string('0', Math.Abs(input.Length + numerics)) + input).TrimEnd('0').TrimEnd('.');
                 }
             }
             return result;
@@ -316,7 +227,7 @@ namespace Raiblocks
                               "\"account\":\"" + account + "\"}";
             string jsonOut = Post(jsonIn);
             dynamic dynObj = JsonConvert.DeserializeObject(jsonOut);
-            dynObj.balance = UnitConvert(dynObj.balance, XRBUnit.raw, unit);
+            dynObj.balance = UnitConvert(dynObj.balance==null? "0": dynObj.balance.ToString(), XRBUnit.raw, unit);
             return (dynObj);
         }
 
@@ -358,9 +269,9 @@ namespace Raiblocks
             string jsonOut = Post(jsonIn);
             dynamic dynObj = JsonConvert.DeserializeObject(jsonOut);
 
-            dynObj.balance = UnitConvert(dynObj.balance, XRBUnit.raw, unit);
-            if (weight) dynObj.weight = UnitConvert(dynObj.weight, XRBUnit.raw, unit);
-            if (pending) dynObj.pending = UnitConvert(dynObj.pending, XRBUnit.raw, unit);
+            dynObj.balance = UnitConvert(dynObj.balance==null? "0": dynObj.balance.ToString(), XRBUnit.raw, unit);
+            if (weight) dynObj.weight = UnitConvert(dynObj.weight==null? "0": dynObj.weight.ToString(), XRBUnit.raw, unit);
+            if (pending) dynObj.pending = UnitConvert(dynObj.pending==null? "0": dynObj.pending.ToString(), XRBUnit.raw, unit);
 
             return (dynObj);
         }
@@ -578,13 +489,24 @@ namespace Raiblocks
               }  
             }
         */
-        public dynamic AccountsFrontiers(List<string> accounts)
+        public List<Frontier> AccountsFrontiers(List<string> accounts)
         {
             string accountsString = CommaSeparated(accounts);
             string jsonIn = "{\"action\":\"accounts_frontiers\"," +
-                              "\"account\": [" + accountsString + "]" +
+                              "\"accounts\": [" + accountsString + "]" +
                               "}";
-            return (GetDynamicObj(jsonIn));
+            string jsonOut = Post(jsonIn);
+            List<Frontier> frontiers = new List<Frontier>();
+            FrontiersResponse frontiersResponse = JsonConvert.DeserializeObject<FrontiersResponse>(jsonOut);
+
+            foreach (var item in frontiersResponse.frontiers._extraStuff)
+            {
+                Frontier frontier = new Frontier();
+                frontier.account= item.Key;
+                frontier.hash = item.Value.ToString();
+                frontiers.Add(frontier);
+            }
+            return frontiers;
         }
 
         /*  AccountsPending: Returns a list of block hashes which have not yet been received by these accounts
@@ -596,7 +518,7 @@ namespace Raiblocks
               }  
              }
          */
-        public List<AccountBlocks> AccountsPending(List<string> accounts, int count, XRBUnit unit)
+        public List<AccountBlocks> AccountsPending(List<string> accounts, int count)
         {
             string accountsString = CommaSeparated(accounts);
             string jsonIn = "{\"action\":\"accounts_pending\"," +
@@ -605,6 +527,8 @@ namespace Raiblocks
                               "}";
 
             string jsonOut = Post(jsonIn);
+            // test:         jsonOut = jsonOut.Replace("\"0C99DA21FC6EC324E9AAB619B08BFE402EA92516F39D6FD250B0290894A07140\"", "\"0C99DA21FC6EC324E9AAB619B08BFE402EA92516F39D6FD250B0290894A07140\",\"0XXXXXXXXXXXXXXXXX\"");
+
             BlocksMultipleResponse blocksResponse = JsonConvert.DeserializeObject<BlocksMultipleResponse>(jsonOut);
             List<AccountBlocks> accountBlocksList = new List<AccountBlocks>();
             foreach (var item in blocksResponse.blocks._extraStuff)
@@ -612,10 +536,10 @@ namespace Raiblocks
                 AccountBlocks accountBlocks = new AccountBlocks();
                 accountBlocks.blocks = new List<AccountBlock>();
                 accountBlocks.account = item.Key;
-                foreach (var hash in item.Value)
+                foreach (var account in item.Value)
                 {
                     AccountBlock accountBlock = new AccountBlock();
-                    accountBlock.hash = hash.ToString();
+                    accountBlock.hash = account.ToString();
                     accountBlocks.blocks.Add(accountBlock);
                 }
                 accountBlocksList.Add(accountBlocks);
@@ -635,7 +559,7 @@ namespace Raiblocks
                 }  
             }
         */
-        public List<AccountBlocks> AccountsPending(List<string> accounts, int count,  string threshold, XRBUnit thresholdUnit, XRBUnit displayUnit)
+        public List<AccountBlocks> AccountsPending(List<string> accounts, int count, string threshold, XRBUnit thresholdUnit, XRBUnit displayUnit)
         {
             string accountsString = CommaSeparated(accounts);
             string jsonIn = "{\"action\":\"accounts_pending\"," +
@@ -655,7 +579,7 @@ namespace Raiblocks
                 {
                     AccountBlock accountBlock = new AccountBlock();
                     accountBlock.hash = hash.Path;
-                    accountBlock.amount = UnitConvert(hash.First.ToString(), XRBUnit.raw, displayUnit);
+                    accountBlock.amount = UnitConvert(hash.First==null ? "0": hash.First.ToString(), XRBUnit.raw, displayUnit);
                     accountBlocks.blocks.Add(accountBlock);
                 }
                 accountBlocksList.Add(accountBlocks);
@@ -681,21 +605,37 @@ namespace Raiblocks
                         }  
                     }
                 */
-        public dynamic AccountsPending(List<string> accounts, int count, bool source, XRBUnit unit)
+        public dynamic AccountsPending(List<string> accounts, int count, bool source, XRBUnit thresholdUnit, XRBUnit displayUnit)
         {
             string accountsString = CommaSeparated(accounts);
             string jsonIn = "{\"action\":\"accounts_pending\"," +
-                              "\"account\": [" + accountsString + "]," +
+                              "\"accounts\": [" + accountsString + "]," +
                               "\"count\":\"" + count.ToString() + "\"," +
                               "\"source\":\"" + source.ToString().ToLower() + "\"" +
                               "}";
             string jsonOut = Post(jsonIn);
+        //    jsonOut = jsonOut.Replace("\"xrb_3e77ic1xarfn6mbbxthh38ibz8rr3gx7ikap6589bmcsdsmuyccd4hy8g8f5\": {", "\"xrb_3e77ic1xarfn6mbbxthh38ibz8rr3gx7ikap6589bmcsdsmuyccd4hy8g8f5\": { " + " \"0C99DA21FCXXXXXX\": {\n"+
+        //       " \"amount\": \"200000000000000\",\n"+
+        //       "\"source\":\"xrb_test\"},");
+
             BlocksMultipleResponse blocksResponse = JsonConvert.DeserializeObject<BlocksMultipleResponse>(jsonOut);
+            List<AccountBlocks> accountBlocksList = new List<AccountBlocks>();
             foreach (var item in blocksResponse.blocks._extraStuff)
             {
-                Block block = new Block() { hash = item.Key, type = item.Value["type"]?.ToString(), source = item.Value["source"]?.ToString(), amount = UnitConvert(item.Value["amount"].ToString(), XRBUnit.raw, unit), block_account = item.Value["block_account"]?.ToString(), representative = item.Value["representative"]?.ToString(), previous = item.Value["previous"]?.ToString(), destination = item.Value["destination"]?.ToString(), balance = UnitConvert(item.Value["balance"].ToString(), XRBUnit.raw, unit), work = item.Value["work"].ToString(), signature = item.Value["signature"].ToString() };
+                AccountBlocks accountBlocks = new AccountBlocks();
+                accountBlocks.blocks = new List<AccountBlock>();
+                accountBlocks.account = item.Key;
+                foreach (var hash in item.Value)
+                {
+                    AccountBlock accountBlock = new AccountBlock();
+                    accountBlock.hash = hash.Path;
+                    accountBlock.amount = UnitConvert(hash.First["amount"].ToString(), XRBUnit.raw, displayUnit);
+                    accountBlock.source = hash.First["source"].ToString();
+                    accountBlocks.blocks.Add(accountBlock);
+                }
+                accountBlocksList.Add(accountBlocks);
             }
-            return (GetDynamicObj(jsonIn));
+            return (accountBlocksList);
         }
 
         /*  AvailableSupply:  Returns how many rai are in the public supply
@@ -765,7 +705,7 @@ namespace Raiblocks
             BlocksMultipleResponse blocksResponse = JsonConvert.DeserializeObject<BlocksMultipleResponse>(jsonOut);
             foreach (var item in blocksResponse.blocks._extraStuff)
             {
-                Block block = new Block() { hash = item.Key, type= item.Value["type"]?.ToString(), source= item.Value["source"]?.ToString(), amount = UnitConvert(item.Value["amount"].ToString(), XRBUnit.raw, unit), block_account= item.Value["block_account"]?.ToString(), representative= item.Value["representative"]?.ToString(), previous = item.Value["previous"]?.ToString(), destination= item.Value["destination"]?.ToString(), balance= UnitConvert(item.Value["balance"].ToString(), XRBUnit.raw, unit), work= item.Value["work"].ToString(), signature= item.Value["signature"].ToString() };
+                Block block = new Block() { hash = item.Key, type= item.Value["type"]?.ToString(), source= item.Value["source"]?.ToString(), amount = UnitConvert(item.Value["amount"]==null ? "0": item.Value["amount"].ToString(), XRBUnit.raw, unit), block_account= item.Value["block_account"]?.ToString(), representative= item.Value["representative"]?.ToString(), previous = item.Value["previous"]?.ToString(), destination= item.Value["destination"]?.ToString(), balance= UnitConvert(item.Value["balance"].ToString(), XRBUnit.raw, unit), work= item.Value["work"].ToString(), signature= item.Value["signature"].ToString() };
                 blocks.Add(block);
             }
             return (blocks);
@@ -790,7 +730,7 @@ namespace Raiblocks
                   }
                 }
           */
-        public BlocksAdditionalContainer RetrieveMultipleBlocksWithAdditionalInfo(List<string> hashes, bool pending = false, bool source = false)
+        public BlocksContainer RetrieveMultipleBlocksWithAdditionalInfo(List<string> hashes, bool pending = false, bool source = false)
         {
             List<Block> blocks = new List<Block>();
             string hashesString = CommaSeparated(hashes);
@@ -938,13 +878,147 @@ namespace Raiblocks
 
 
 
+        /*  Pending:  Returns a list of block hashes which have not yet been received by this account.
+         *  Response:
+            {    
+              "blocks" : [ "000D1BAEC8EC208142C99059B393051BAC8380F9B5A2E6B2489A277D81789F3F" ]  
+            }
+         */
+        public PendingBlocks Pending(string account, int count)
+        {
+            string jsonIn = "{\"action\":\"pending\"," +
+                              "\"account\": \"" + account + "\"," +
+                              "\"count\": " + count.ToString() +
+                              "}";
+
+            string jsonOut = Post(jsonIn);
+            PendingBlocks blocksResponse = JsonConvert.DeserializeObject<PendingBlocks>(jsonOut);
+            return (blocksResponse);
+        }
+
+        /*  Pending:  Returns a list of block hashes which have not yet been received by this account.
+         *  Optional: Returns a list of pending block hashes with amount more or equal to threshold
+         *  Response:
+            {  
+              "blocks" : {    
+                    "000D1BAEC8EC208142C99059B393051BAC8380F9B5A2E6B2489A277D81789F3F": "6000000000000000000000000000000"    
+                }  
+            }
+        */
+        public List<AccountBlock> Pending(string account, int count, string threshold, XRBUnit thresholdUnit, XRBUnit displayUnit)
+        {
+            string jsonIn = "{\"action\":\"pending\"," +
+                              "\"account\": \"" + account + "\"," +
+                              "\"count\":\"" + count.ToString() + "\"," +
+                              "\"threshold\":\"" + UnitConvert(threshold, XRBUnit.raw, thresholdUnit).ToString() + "\"" +
+                              "}";
+            string jsonOut = Post(jsonIn);
+            BlocksMultipleResponse blocksResponse = JsonConvert.DeserializeObject<BlocksMultipleResponse>(jsonOut);
+            List<AccountBlock> accountBlockList = new List<AccountBlock>();
+            foreach (var item in blocksResponse.blocks._extraStuff)
+            {
+                AccountBlock accountBlock = new AccountBlock();
+                accountBlock.hash = item.Key;
+                accountBlock.amount = UnitConvert(item.Value.ToString(), thresholdUnit, displayUnit);
+                
+                accountBlockList.Add(accountBlock);
+            }
+            return (accountBlockList);
+        }
+        /*  Pending:  Returns a list of block hashes which have not yet been received by this account.
+         *  Optional: Returns a list of pending block hashes with amount and source accounts
+         *  Response:
+            {  
+              "blocks" : {    
+                    "000D1BAEC8EC208142C99059B393051BAC8380F9B5A2E6B2489A277D81789F3F": {   
+                         "amount": "6000000000000000000000000000000",       
+                         "source": "xrb_3dcfozsmekr1tr9skf1oa5wbgmxt81qepfdnt7zicq5x3hk65fg4fqj58mbr"  
+                    }   
+                }  
+            }
+        */
+        public List<AccountBlock> Pending(string account, int count, bool source, XRBUnit displayUnit)
+        {
+            string jsonIn = "{\"action\":\"pending\"," +
+                              "\"account\": \"" + account + "\"," +
+                              "\"count\":\"" + count.ToString() + "\"," +
+                              "\"source\":\"" + source.ToString().ToLower()+ "\"" +
+                              "}";
+            string jsonOut = Post(jsonIn);
+            BlocksMultipleResponse blocksResponse = JsonConvert.DeserializeObject<BlocksMultipleResponse>(jsonOut);
+            List<AccountBlock> accountBlockList = new List<AccountBlock>();
+            foreach (var item in blocksResponse.blocks._extraStuff)
+            {
+                AccountBlock accountBlock = new AccountBlock();
+                accountBlock.hash = item.Key;
+                accountBlock.amount = UnitConvert(item.Value["amount"].ToString(), XRBUnit.raw, displayUnit);
+                accountBlock.source = item.Value["source"].ToString();
+                accountBlockList.Add(accountBlock);
+            }
+            return (accountBlockList);
+        }
+
+        /*  Pending exists:  Check whether block is pending by hash
+         *  Response:
+            {  
+              "exists" : "1"
+            }
+         */
+        public dynamic PendingExists(string hash)
+        {
+            string jsonIn = "{\"action\":\"pending_exists\"," +
+                              "\"hash\":\"" + hash + "\"" +
+                              
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
 
 
+        /*  Unchecked blocks:  Returns a list of pairs of unchecked synchronizing block hash and its json representation up to count
+         *  Response:
+            {  
+                "blocks": {  
+                   "000D1BAEC8EC208142C99059B393051BAC8380F9B5A2E6B2489A277D81789F3F": "{
+                      "type": "open",
+                      "account": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",
+                      "representative": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000",
+                      "source": "FA5B51D063BADDF345EFD7EF0D3C5FB115C85B1EF4CDE89D8B7DF3EAF60A04A4",
+                      "work": "0000000000000000",
+                      "signature": 
+             "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                   }"
+                }
+            }
+         */
+        public List<Block> UncheckedBlocks(int count)
+        {
+            List<Block> blocks = new List<Block>();
+            string jsonIn = "{\"action\":\"unchecked\"," +
+                              "\"count\":\"" + count.ToString() + "\"" +
+                              "}";
+            string jsonOut = Post(jsonIn);
+            jsonOut = JsonCleanUp(jsonOut);
+            BlocksAdditionalResponse blocksResponse = JsonConvert.DeserializeObject<BlocksAdditionalResponse>(jsonOut);
+            foreach (var item in blocksResponse.blocks._extraStuff)
+            {
+                Block block = new Block() { hash = item.Key, type = item.Value["type"]?.ToString(), account = item.Value["account"]?.ToString(), block_account = item.Value["block_account"]?.ToString(), amount = item.Value["amount"]?.ToString(), previous = item.Value["previous"]?.ToString(), destination = item.Value["destination"]?.ToString(), representative = item.Value["representative"]?.ToString(), source = item.Value["source"]?.ToString(), balance = item.Value["balance"]?.ToString(), work = item.Value["work"]?.ToString(), signature = item.Value["signature"]?.ToString() };
+                blocks.Add(block);
+            }
+            return (blocks);
+        }
 
-
-
-
-
+        /*  Pending exists:  Clear unchecked blocks
+         *  Response:
+            {  
+                "success": ""  
+            }
+         */
+        public dynamic ClearUncheckedBlocks()
+        {
+            string jsonIn = "{\"action\":\"unchecked_clear\"" +
+                              "}";
+            return (GetDynamicObj(jsonIn));
+        }
 
 
         /*  WalletAddKey:  Add an adhoc private key key to wallet

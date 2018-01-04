@@ -47,7 +47,7 @@ namespace Raiblocks
             dynamic history = accountHistory.history;
             for (int i = 0; i < history.Count; i++)
             {
-                History hist = new History() { account = account, amount = Rai.UnitConvert(history[i].amount, XRBUnit.raw, unit), hash = history[i].hash, type = history[i].type };
+                History hist = new History() { account = account, amount = Rai.UnitConvert(history[i].amount.ToString(), XRBUnit.raw, unit), hash = history[i].hash, type = history[i].type };
                 historyList.Add(hist);
             }
             return historyList;
@@ -101,13 +101,21 @@ namespace Raiblocks
             return accountBalances;
         }
 
-        public List<AccountBlocks> AccountsPending(List<string> accounts, int count, XRBUnit unit = XRBUnit.XRB)
+        public List<Frontier> AccountsFrontiers(List<string> accounts)
         {
-            return Rai.AccountsPending(accounts, count, unit);
+            return Rai.AccountsFrontiers(accounts);
+        }
+        public List<AccountBlocks> AccountsPending(List<string> accounts, int count)
+        {
+            return Rai.AccountsPending(accounts, count);
         }
         public List<AccountBlocks> AccountsPending(List<string> accounts, int count, string threshold,  XRBUnit thresholdUnit = XRBUnit.raw, XRBUnit displayUnit = XRBUnit.XRB)
         {
             return Rai.AccountsPending(accounts, count, threshold, thresholdUnit, displayUnit);
+        }
+        public List<AccountBlocks> AccountsPending(List<string> accounts, int count, bool source, XRBUnit thresholdUnit = XRBUnit.raw, XRBUnit displayUnit = XRBUnit.XRB)
+        {
+            return Rai.AccountsPending(accounts, count, source, thresholdUnit, displayUnit);
         }
         public string AvailableSupply(XRBUnit unit)
         {
@@ -124,7 +132,7 @@ namespace Raiblocks
         {
             return Rai.RetrieveMultipleBlocks(hashes, unit);
         }
-        public BlocksAdditionalContainer RetrieveMultipleBlocksWithAdditionalInfo(List<string> hashes, bool pending = false, bool source = false)
+        public BlocksContainer RetrieveMultipleBlocksWithAdditionalInfo(List<string> hashes, bool pending = false, bool source = false)
         {
             return Rai.RetrieveMultipleBlocksWithAdditionalInfo(hashes);
         }
@@ -165,7 +173,37 @@ namespace Raiblocks
             return Rai.Chain(block, count);
         }
 
-        
+
+        public PendingBlocks Pending(string account, int count)
+        {
+            return Rai.Pending(account, count);
+        }
+        public List<AccountBlock> Pending(string account, int count, string threshold, XRBUnit thresholdUnig, XRBUnit displayUnit)
+        {
+            return Rai.Pending(account, count, threshold, thresholdUnig, displayUnit);
+        }
+        public List<AccountBlock> Pending(string account, int count, bool source, XRBUnit displayUnit)
+        {
+            return Rai.Pending(account, count, source, displayUnit);
+        }
+        public bool PendingExists(string hash)
+        {
+            dynamic dynObj = Rai.PendingExists(hash);
+            return dynObj["exists"].ToString() =="0" ? false:true;
+        }
+        public List<Block> UncheckedBlocks(int count)
+        {
+            return Rai.UncheckedBlocks(count);
+        }
+
+        public string ClearUncheckedBlocks()
+        {
+            dynamic dynObj = Rai.ClearUncheckedBlocks();
+            return dynObj["success"].ToString();
+        }
+
+
+
         public string WalletAddKey(string wallet, string key, bool work=true)
         {
             dynamic dynObj = Rai.WalletAddKey(wallet, key, work);
@@ -181,7 +219,6 @@ namespace Raiblocks
         /* todo: implement threshold parameter */
         public List<AccountBalance> WalletAccountsBalances(string wallet, XRBUnit unit = XRBUnit.XRB)
         {
-
             dynamic item = Rai.WalletAccountsBalances(wallet);
             return AccountsBalancesBase(item, unit);
         }
@@ -202,7 +239,7 @@ namespace Raiblocks
             if (dynObj.exists == "1")
                 exists = true;
             return exists;
-        }
+        } 
 
         public string WalletCreate()
         {

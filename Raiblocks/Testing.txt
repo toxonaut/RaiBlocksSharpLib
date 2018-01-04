@@ -10,3 +10,15 @@ wallet add key (the one above) : xrb_11pw14xaefsujskx84644jdmioxugejhh1aq3pf3kk7
 
 account create: xrb_1qsat6nqpqgqboefxdscdueqiq7fhhcbjfkcyjbszq4uzancskjgii7knjer
 
+
+
+
+-----
+
+7D31E8C8FE9575AB82191347B0941D2A5B5701F0EB24D628E60A0107F491619E
+
+private: B0B70F7181E6E10439968204009451F790CA6AEE5103DCC489C96FFAF5E7CF5A
+public: 02DC00BA86373B8E65D3088214573857BB7322F781170D9A1948A4D37B5BA7CF
+account: xrb_11pw14xaefsujskx84644jdmioxugejhh1aq3pf3kk76tfxoqbyhn7tpnjb3
+
+xrb_11pw14xaefsujskx84644jdmioxugejhh1aq3pf3kk76tfxoqbyhn7tpnjb3

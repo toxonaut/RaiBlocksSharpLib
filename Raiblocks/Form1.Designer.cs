@@ -66,6 +66,15 @@
             this.button10 = new System.Windows.Forms.Button();
             this.btnAccountsPending = new System.Windows.Forms.Button();
             this.button11 = new System.Windows.Forms.Button();
+            this.btnAccountsPending2 = new System.Windows.Forms.Button();
+            this.btnAccountsPending3 = new System.Windows.Forms.Button();
+            this.btnAccountsFrontiers = new System.Windows.Forms.Button();
+            this.btnPending = new System.Windows.Forms.Button();
+            this.btnPending2 = new System.Windows.Forms.Button();
+            this.btnPending3 = new System.Windows.Forms.Button();
+            this.btnPendingExists = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
+            this.button13 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -131,13 +140,13 @@
             // 
             this.richTextBox1.Location = new System.Drawing.Point(11, 64);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(559, 190);
+            this.richTextBox1.Size = new System.Drawing.Size(558, 277);
             this.richTextBox1.TabIndex = 6;
             this.richTextBox1.Text = "";
             // 
             // txtWallet
             // 
-            this.txtWallet.Location = new System.Drawing.Point(80, 269);
+            this.txtWallet.Location = new System.Drawing.Point(80, 358);
             this.txtWallet.Name = "txtWallet";
             this.txtWallet.Size = new System.Drawing.Size(490, 20);
             this.txtWallet.TabIndex = 7;
@@ -174,7 +183,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(593, 309);
+            this.button6.Location = new System.Drawing.Point(593, 398);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(103, 23);
             this.button6.TabIndex = 11;
@@ -184,7 +193,7 @@
             // 
             // txtSeed
             // 
-            this.txtSeed.Location = new System.Drawing.Point(80, 312);
+            this.txtSeed.Location = new System.Drawing.Point(80, 401);
             this.txtSeed.Name = "txtSeed";
             this.txtSeed.Size = new System.Drawing.Size(409, 20);
             this.txtSeed.TabIndex = 12;
@@ -192,7 +201,7 @@
             // 
             // txtIndex
             // 
-            this.txtIndex.Location = new System.Drawing.Point(534, 311);
+            this.txtIndex.Location = new System.Drawing.Point(534, 400);
             this.txtIndex.Name = "txtIndex";
             this.txtIndex.Size = new System.Drawing.Size(35, 20);
             this.txtIndex.TabIndex = 13;
@@ -201,7 +210,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(18, 314);
+            this.label3.Location = new System.Drawing.Point(18, 403);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(32, 13);
             this.label3.TabIndex = 14;
@@ -210,7 +219,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(495, 314);
+            this.label4.Location = new System.Drawing.Point(496, 404);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(32, 13);
             this.label4.TabIndex = 15;
@@ -228,7 +237,7 @@
             // 
             // btnWalletCreate
             // 
-            this.btnWalletCreate.Location = new System.Drawing.Point(593, 269);
+            this.btnWalletCreate.Location = new System.Drawing.Point(593, 358);
             this.btnWalletCreate.Name = "btnWalletCreate";
             this.btnWalletCreate.Size = new System.Drawing.Size(103, 23);
             this.btnWalletCreate.TabIndex = 17;
@@ -238,7 +247,7 @@
             // 
             // txtPrivateKey
             // 
-            this.txtPrivateKey.Location = new System.Drawing.Point(80, 355);
+            this.txtPrivateKey.Location = new System.Drawing.Point(80, 444);
             this.txtPrivateKey.Name = "txtPrivateKey";
             this.txtPrivateKey.Size = new System.Drawing.Size(409, 20);
             this.txtPrivateKey.TabIndex = 18;
@@ -246,7 +255,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(15, 355);
+            this.label5.Location = new System.Drawing.Point(15, 444);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(60, 13);
             this.label5.TabIndex = 19;
@@ -254,7 +263,7 @@
             // 
             // btnWalletAddKey
             // 
-            this.btnWalletAddKey.Location = new System.Drawing.Point(593, 352);
+            this.btnWalletAddKey.Location = new System.Drawing.Point(593, 441);
             this.btnWalletAddKey.Name = "btnWalletAddKey";
             this.btnWalletAddKey.Size = new System.Drawing.Size(103, 23);
             this.btnWalletAddKey.TabIndex = 20;
@@ -265,7 +274,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(13, 275);
+            this.label6.Location = new System.Drawing.Point(13, 364);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(37, 13);
             this.label6.TabIndex = 21;
@@ -273,7 +282,7 @@
             // 
             // btnWalletDestroy
             // 
-            this.btnWalletDestroy.Location = new System.Drawing.Point(742, 270);
+            this.btnWalletDestroy.Location = new System.Drawing.Point(731, 358);
             this.btnWalletDestroy.Name = "btnWalletDestroy";
             this.btnWalletDestroy.Size = new System.Drawing.Size(128, 23);
             this.btnWalletDestroy.TabIndex = 22;
@@ -338,7 +347,7 @@
             // 
             // txtBlock
             // 
-            this.txtBlock.Location = new System.Drawing.Point(80, 390);
+            this.txtBlock.Location = new System.Drawing.Point(1091, 337);
             this.txtBlock.Name = "txtBlock";
             this.txtBlock.Size = new System.Drawing.Size(409, 20);
             this.txtBlock.TabIndex = 29;
@@ -347,7 +356,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(20, 396);
+            this.label7.Location = new System.Drawing.Point(1031, 343);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(34, 13);
             this.label7.TabIndex = 30;
@@ -407,9 +416,9 @@
             // 
             this.btnAccountsPending.Location = new System.Drawing.Point(913, 252);
             this.btnAccountsPending.Name = "btnAccountsPending";
-            this.btnAccountsPending.Size = new System.Drawing.Size(146, 23);
+            this.btnAccountsPending.Size = new System.Drawing.Size(115, 23);
             this.btnAccountsPending.TabIndex = 36;
-            this.btnAccountsPending.Text = "Accounts Pending";
+            this.btnAccountsPending.Text = "Accounts Pending 1";
             this.btnAccountsPending.UseVisualStyleBackColor = true;
             this.btnAccountsPending.Click += new System.EventHandler(this.btnAccountsPending_Click);
             // 
@@ -423,11 +432,110 @@
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
+            // btnAccountsPending2
+            // 
+            this.btnAccountsPending2.Location = new System.Drawing.Point(1034, 252);
+            this.btnAccountsPending2.Name = "btnAccountsPending2";
+            this.btnAccountsPending2.Size = new System.Drawing.Size(25, 23);
+            this.btnAccountsPending2.TabIndex = 38;
+            this.btnAccountsPending2.Text = "2";
+            this.btnAccountsPending2.UseVisualStyleBackColor = true;
+            this.btnAccountsPending2.Click += new System.EventHandler(this.btnAccountsPending2_Click);
+            // 
+            // btnAccountsPending3
+            // 
+            this.btnAccountsPending3.Location = new System.Drawing.Point(1065, 252);
+            this.btnAccountsPending3.Name = "btnAccountsPending3";
+            this.btnAccountsPending3.Size = new System.Drawing.Size(25, 23);
+            this.btnAccountsPending3.TabIndex = 39;
+            this.btnAccountsPending3.Text = "3";
+            this.btnAccountsPending3.UseVisualStyleBackColor = true;
+            this.btnAccountsPending3.Click += new System.EventHandler(this.btnAccountsPending3_Click);
+            // 
+            // btnAccountsFrontiers
+            // 
+            this.btnAccountsFrontiers.Location = new System.Drawing.Point(913, 214);
+            this.btnAccountsFrontiers.Name = "btnAccountsFrontiers";
+            this.btnAccountsFrontiers.Size = new System.Drawing.Size(115, 23);
+            this.btnAccountsFrontiers.TabIndex = 40;
+            this.btnAccountsFrontiers.Text = "Accounts Frontiers";
+            this.btnAccountsFrontiers.UseVisualStyleBackColor = true;
+            this.btnAccountsFrontiers.Click += new System.EventHandler(this.btnAccountsFrontiers_Click);
+            // 
+            // btnPending
+            // 
+            this.btnPending.Location = new System.Drawing.Point(593, 493);
+            this.btnPending.Name = "btnPending";
+            this.btnPending.Size = new System.Drawing.Size(103, 23);
+            this.btnPending.TabIndex = 41;
+            this.btnPending.Text = "Pending";
+            this.btnPending.UseVisualStyleBackColor = true;
+            this.btnPending.Click += new System.EventHandler(this.btnPending_Click);
+            // 
+            // btnPending2
+            // 
+            this.btnPending2.Location = new System.Drawing.Point(703, 493);
+            this.btnPending2.Name = "btnPending2";
+            this.btnPending2.Size = new System.Drawing.Size(30, 23);
+            this.btnPending2.TabIndex = 42;
+            this.btnPending2.Text = "2";
+            this.btnPending2.UseVisualStyleBackColor = true;
+            this.btnPending2.Click += new System.EventHandler(this.btnPending2_Click);
+            // 
+            // btnPending3
+            // 
+            this.btnPending3.Location = new System.Drawing.Point(742, 493);
+            this.btnPending3.Name = "btnPending3";
+            this.btnPending3.Size = new System.Drawing.Size(36, 23);
+            this.btnPending3.TabIndex = 43;
+            this.btnPending3.Text = "3";
+            this.btnPending3.UseVisualStyleBackColor = true;
+            this.btnPending3.Click += new System.EventHandler(this.btnPending3_Click);
+            // 
+            // btnPendingExists
+            // 
+            this.btnPendingExists.Location = new System.Drawing.Point(593, 533);
+            this.btnPendingExists.Name = "btnPendingExists";
+            this.btnPendingExists.Size = new System.Drawing.Size(103, 23);
+            this.btnPendingExists.TabIndex = 44;
+            this.btnPendingExists.Text = "Pending exists";
+            this.btnPendingExists.UseVisualStyleBackColor = true;
+            this.btnPendingExists.Click += new System.EventHandler(this.btnPendingExists_Click);
+            // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(593, 572);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(113, 23);
+            this.button12.TabIndex = 45;
+            this.button12.Text = "Unchecked blocks";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(593, 611);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(140, 23);
+            this.button13.TabIndex = 46;
+            this.button13.Text = "Clear Unchecked Blocks";
+            this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1172, 605);
+            this.ClientSize = new System.Drawing.Size(1546, 743);
+            this.Controls.Add(this.button13);
+            this.Controls.Add(this.button12);
+            this.Controls.Add(this.btnPendingExists);
+            this.Controls.Add(this.btnPending3);
+            this.Controls.Add(this.btnPending2);
+            this.Controls.Add(this.btnPending);
+            this.Controls.Add(this.btnAccountsFrontiers);
+            this.Controls.Add(this.btnAccountsPending3);
+            this.Controls.Add(this.btnAccountsPending2);
             this.Controls.Add(this.button11);
             this.Controls.Add(this.btnAccountsPending);
             this.Controls.Add(this.button10);
@@ -513,6 +621,15 @@
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Button btnAccountsPending;
         private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Button btnAccountsPending2;
+        private System.Windows.Forms.Button btnAccountsPending3;
+        private System.Windows.Forms.Button btnAccountsFrontiers;
+        private System.Windows.Forms.Button btnPending;
+        private System.Windows.Forms.Button btnPending2;
+        private System.Windows.Forms.Button btnPending3;
+        private System.Windows.Forms.Button btnPendingExists;
+        private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Button button13;
     }
 }
 
