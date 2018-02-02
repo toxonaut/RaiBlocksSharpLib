@@ -24,7 +24,7 @@ namespace Raiblocks
 
         private void button1_Click(object sender, EventArgs e)
         {
-            label2.Text = API.AccountBalance(txtAccount.Text).balance + " XRB";
+            label2.Text = API.AccountBalance(txtAccount.Text, XRBUnit.XRB).balance + " XRB";
         }
 
         private void btnBlockCount_Click(object sender, EventArgs e)
@@ -139,7 +139,7 @@ namespace Raiblocks
             hashes.Add("C6D1A9E4F631E5BD9AF104C9A08535F7FBA69252C655F5EE52FE7B20B13894CB");
 
 
-            BlocksContainer cont = API.RetrieveMultipleBlocksWithAdditionalInfo(hashes);
+            List<Block> cont = API.RetrieveMultipleBlocksWithAdditionalInfo(hashes);
         }
 
         private void button9_Click(object sender, EventArgs e)
@@ -186,15 +186,8 @@ namespace Raiblocks
             accounts.Add("xrb_3azxczhmrws5sxm4ezy1xf57tuh67crehjw1oi98ygynas71wyop1jt1p8wx");*/
 
             accounts.Add(txtAccount.Text);
-            List<AccountBlocks> blocks = API.AccountsPending(accounts, 3, true, XRBUnit.raw, XRBUnit.XRB);
+            List<AccountBlocks> blocks = API.AccountsPending(accounts, 3, true, XRBUnit.XRB);
             richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<List<AccountBlocks>>(blocks);
-        }
-        private void button11_Click(object sender, EventArgs e)
-        {
-            API.Rai.UnitConvert("1.123456789012345", XRBUnit.prai, XRBUnit.prai);
-
-          //  API.Rai.UnitConvert2("10.12", XRBUnit.prai, XRBUnit.prai);
-
         }
 
 
@@ -212,8 +205,8 @@ namespace Raiblocks
 
         private void btnPending_Click(object sender, EventArgs e)
         {
-            PendingBlocks pending = API.Pending(txtAccount.Text, 1);
-            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<PendingBlocks>(pending);
+            List<string> pending = API.Pending(txtAccount.Text, 1);
+            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<List<string>>(pending);
         }
 
         private void btnPending2_Click(object sender, EventArgs e)
@@ -242,12 +235,168 @@ namespace Raiblocks
         {
             richTextBox1.Text = "--------------------------------------\n" + API.ClearUncheckedBlocks();
         }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<Block>(API.RetrieveUncheckedBlock(txtBlock.Text));
+        }
+
+        private void button16_Click_1(object sender, EventArgs e)
+        {
+            var balance = API.WalletTotalBalance(txtWallet.Text);
+            richTextBox1.Text = "--------------------------------------\n" + "balance: " + balance.balance + " pending: " + balance.pending;
+        }
+
+
+
+        private void btnWalletExport_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + API.WalletExport(txtWallet.Text);
+        }
+
+        private void btnWalletFrontiers_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<List<Frontier>>(API.WalletFrontiers(txtWallet.Text));
+        }
+
+        private void btnWalletPending_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<List<AccountBlocks>>(API.WalletPending(txtWallet.Text,1));
+        }
+
+        private void btnWalletsPending2_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<List<AccountBlocks>>(API.WalletPending(txtWallet.Text, 1,"10", XRBUnit.raw, XRBUnit.XRB));
+        }
+
+        private void btnWalletPending3_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<List<AccountBlocks>>(API.WalletPending(txtWallet.Text, 1, true, XRBUnit.XRB));
+        }
+
+        private void btnWalletRepublish_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<List<string>>(API.WalletRepublish(txtWallet.Text, 10));
+
+        }
+
+        private void btnWalletWorkGet_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<List<Work>>(API.WalletWorkGet(txtWallet.Text));
+        }
+
+        private void btnWalletChangePW_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + API.WalletChangePassword(txtWallet.Text, txtPW.Text);
+        }
+
+        private void btnWalletEnterPW_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + API.WalletPasswordEnter(txtWallet.Text, txtPW.Text);
+        }
+
+        private void btnWalletValidPW_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + API.WalletValidPW(txtWallet.Text);
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + API.WalletLockedCheck(txtWallet.Text);
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            API.WorkCancel(txtBlock.Text);
+            richTextBox1.Text = "--------------------------------------\n" + "executed" ;
+        }
+
+        private void btnWorkGenerate_Click(object sender, EventArgs e)
+        {
+            string work = API.WorkGenerate(txtBlock.Text);
+            richTextBox1.Text = "--------------------------------------\n" + work;
+            txtWork.Text = work;
+        }
+
+        private void btnWorkGet_Click(object sender, EventArgs e)
+        {
+            string work = API.WorkGet(txtWallet.Text, txtAccount.Text);
+            richTextBox1.Text = "--------------------------------------\n" + work;
+            txtWork.Text = work;
+        }
+
+        private void btnWorkSet_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + API.WorkSet(txtWallet.Text, txtAccount.Text, txtWork.Text);
+        }
+
+        private void btnAddWorkPeer_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + API.AddWorkPeer("::ffff:172.17.0.1:7076", "7076");
+        }
+
+        private void btnRetrieveWorkPeers_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<List<string>>(API.RetrieveWorkPeers());
+        }
+
+        private void btnClearWorkPeers_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + API.ClearWorkPeers();
+        }
+
+        private void btnWorkValidate_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + API.WorkValidate(txtWork.Text, txtBlock.Text);
+        }
+
+        private void btnRetrieveOnlinePeers_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<List<PeerVersion>>(API.RetrieveOnlinePeers());
+        }
+
+        private void btnRetrieveNodeVersions_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<NodeVersions>(API.RetrieveNodeVersions());
+        }
+
+        private void btnSuccessors_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + Helper.SerializeObject<List<string>>(API.Successors(txtBlock.Text, Convert.ToInt16(txtSuccessors.Text)));
+        }
+
+        private void btnValAccNoChksum_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + API.ValidateAccountNumberChecksum(txtAccount.Text).ToString();
+        }
+
+        private void button16_Click_2(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + API.StopNode().ToString();
+        }
+
+        private void btnSend_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "--------------------------------------\n" + API.Send(txtWallet.Text, txtAccount.Text, txtSendTo.Text, txtSendAmount.Text, XRBUnit.XRB);
+        }
+
+        private void ConvertUnit_Click(object sender, EventArgs e)
+        {
+            API.Rai.UnitConvert("1.123456789012345", XRBUnit.prai, XRBUnit.prai);
+        }
+
+        private void txtSuccessors_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 
     public static class Helper
     {
         public static string SerializeObject<T>(this T toSerialize)
         {
+            if (toSerialize == null)
+                return "";
             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
 
             using (StringWriter textWriter = new StringWriter())

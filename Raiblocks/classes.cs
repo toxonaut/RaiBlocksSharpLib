@@ -50,18 +50,14 @@ namespace Raiblocks
         public Block contents { get; set; }
     }
 
-    public class BlocksContainer
-    {
-        [JsonExtensionData]
-        public IDictionary<string, JToken> _extraStuff;
-    }
+
     public class BlocksAdditionalResponse
     {
-        public BlocksContainer blocks { get; set; }
+        public GenericContainer blocks { get; set; }
     }
     public class BlocksMultipleResponse
     {
-        public BlocksContainer blocks { get; set; }
+        public GenericContainer blocks { get; set; }
     }
     public class BlocksResponse
     {
@@ -78,15 +74,41 @@ namespace Raiblocks
         public string hash { get; set; }
     }
 
-    public class FrontiersContainer
+    public class FrontiersResponse
+    {
+        public GenericContainer frontiers { get; set; }
+    }
+
+    public class Work
+    {
+        public string account { get; set; }
+        public string work { get; set; }
+    }
+
+    public class GenericContainer
     {
         [JsonExtensionData]
         public IDictionary<string, JToken> _extraStuff;
     }
-    public class FrontiersResponse
+    public class WorksResponse
     {
-        public FrontiersContainer frontiers { get; set; }
+        public GenericContainer works { get; set; }
     }
+
+    public class WorkPeers
+    {
+        public List<string> work_peers { get; set; }
+    }
+    public class PeerVersion
+    {
+        public string address { get; set; }
+        public string version { get; set; }
+    }
+    public class PeersResponse
+    {
+        public GenericContainer peers { get; set; }
+    }
+
     public class PendingBlocks
     {
         public List<string> blocks { get; set; }
@@ -97,6 +119,12 @@ namespace Raiblocks
         public string type { get; set; }
         public string account { get; set; }
         public string amount { get; set; }
+    }
+    public class NodeVersions
+    {
+        public string rpc_version { get; set; }
+        public string store_version { get; set; }
+        public string node_vendor { get; set; }
     }
     public class KeyPair
     {
